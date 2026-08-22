@@ -8,11 +8,11 @@ StarryLink is an AI-native communication system for disasters, weak networks, ou
 
 Its intelligence is not a chatbot and does not merely recommend a radio. **Starry Intelligence decides and coordinates communication under uncertainty.**
 
-## Phase 3 status
+## Phase 4A status
 
-This repository now contains **Phase 3 — Communication Intelligence** over the sealed Phase 2 autonomous runtime. The new bounded layer adds typed semantic mission understanding, ambiguity and provenance, evidence-backed incident interpretation and explanations, non-executing recommendations, a provider-neutral model boundary, strict structured output, and deterministic fallback.
+Phase 3 is sealed at `phase-3-communication-intelligence-ready`. The working tree now contains **Phase 4A — Operator Control Plane & Persistent Runtime History**: strict operator/API contracts, append-only history ports, deterministic projections, typed review decisions, structured observability, and simulation-backed restart/replay.
 
-The deterministic runtime remains authoritative for routing, hard policy, final validation, execution capabilities, transport simulation, ACK verification, autonomy bounds, and terminal state. Phase 3 has no live provider dependency, credentials, hardware integration, production persistence, or UI.
+The deterministic runtime remains authoritative for routing, hard policy, final validation, execution capabilities, transport simulation, ACK verification, autonomy bounds, and terminal state. The control plane, operator, API, persistence, observability, and read models cannot issue execution authority or create delivery truth. Phase 4A has no live provider dependency, credentials, durable database, hardware integration, HTTP listener, or UI.
 
 ## Run the domain simulation
 
@@ -27,6 +27,9 @@ npm run runtime -- determinism
 npm run intelligence -- natural-language-medical-emergency
 npm run intelligence -- compare
 npm run intelligence -- determinism
+npm run control-plane -- create-medical-mission
+npm run control-plane -- compare
+npm run control-plane -- determinism
 ```
 
 Quality gates:
@@ -38,7 +41,7 @@ npm test
 npm run build
 ```
 
-The CLI output is calculated by the same domain, policy, routing, execution, verification, observation, adaptation, and intelligence modules used by the tests. Fixtures never contain a selected route or delivery result. See [Domain engine](docs/domain-engine.md) for Phase 1 contracts, [Autonomous StarryRuntime](docs/starry-runtime.md) for Phase 2 lifecycle guarantees, and [Communication Intelligence](docs/communication-intelligence.md) for the Phase 3 trust boundary.
+The CLI output is calculated by the same domain, policy, routing, execution, verification, observation, adaptation, intelligence, persistence, and projection modules used by the tests. Fixtures never contain a selected route or delivery result. See [Domain engine](docs/domain-engine.md) for Phase 1 contracts, [Autonomous StarryRuntime](docs/starry-runtime.md) for Phase 2 lifecycle guarantees, [Communication Intelligence](docs/communication-intelligence.md) for Phase 3, and [Operator Control Plane](docs/operator-control-plane.md) for Phase 4A.
 
 ## The system in one loop
 
@@ -152,6 +155,7 @@ The six Phase 0 documents are the source of truth for implementation:
 - [Scenarios](docs/scenarios.md) — simulation model, five core scenarios, transitions, fixtures, and acceptance checks.
 - [Autonomous StarryRuntime](docs/starry-runtime.md) — Phase 2 lifecycle, bounds, observation normalization, adaptation, events, idempotency, and termination.
 - [Communication Intelligence](docs/communication-intelligence.md) — Phase 3 semantic model, evidence, explanations, recommendations, LLM boundary, fallback, and security guarantees.
+- [Operator Control Plane](docs/operator-control-plane.md) — Phase 4A commands, queries, persistence, replay, operator review, observability, and ACK authority.
 - [Hackathon alignment](docs/hackathon-alignment.md) — evidence for autonomous, adaptive, AI-native, domain-aware, safe operation and Codex's role.
 
 ## Roadmap
@@ -165,4 +169,4 @@ The six Phase 0 documents are the source of truth for implementation:
 - **Phase 6 — Mobile Field Interface:** implement the four essential Field Link actions and weak-network feedback.
 - **Phase 7 — Hardening:** address performance, accessibility, reduced motion, offline behavior, security, error states, and edge cases.
 
-The next implementation objective is **Phase 4 — Integration & Operator Interface**. Authentication, billing, CMS, production carrier infrastructure, real satellite or LoRa hardware, drone control, a vector database, and unconstrained agent frameworks remain deferred.
+The next implementation objective after Phase 4A review is **Phase 4B — Operator Dashboard**. Phase 4C live transport/hardware integration, authentication, billing, CMS, production carrier infrastructure, real satellite or LoRa hardware, drone control, a vector database, and unconstrained agent frameworks remain deferred.

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "control-plane": "tsx src/cli/control-plane.ts",
     "intelligence": "tsx src/cli/intelligence.ts",
     "lint": "eslint .",
     "runtime": "tsx src/cli/runtime.ts",

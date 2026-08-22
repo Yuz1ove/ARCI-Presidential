@@ -649,3 +649,9 @@ Run these with `npm run runtime -- <fixture>`, `npm run runtime -- compare`, and
 Phase 3 adds ten deterministic intelligence fixtures under `src/simulation/intelligence/`. They cover natural-language medical interpretation, conservative ambiguity, prompt injection, cellular-to-LoRa incident explanation, late ACK identity, no valid route, provider failure, invalid model output, semantic priority update, and structured explanation determinism.
 
 The intelligence fixture supplies text and selects an existing deterministic runtime fixture where runtime evidence is required. It never supplies a selected route, execution capability, delivery result, ACK result, runtime budget, or terminal state. Run the suite with `npm run intelligence -- compare` and its ten-replay gate with `npm run intelligence -- determinism`.
+
+## 14. Phase 4A operator control-plane outcomes
+
+Phase 4A adds fifteen integration scenarios under `src/simulation/control-plane/`. They exercise strict API submission and queries, append-only history, deterministic projection, operator review, provider and persistence failure, forged delivery and ACK bodies, late ACK isolation, restart/replay, no valid route, and conflicting persisted state.
+
+All external inputs remain command intent. They cannot contain runtime events, graph state, autonomy budgets, route history, execution identity, capabilities, ACK evidence, or delivery state. Run the suite with `npm run control-plane -- compare` and its ten-replay gate with `npm run control-plane -- determinism`.
