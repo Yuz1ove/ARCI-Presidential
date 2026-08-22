@@ -655,3 +655,9 @@ The intelligence fixture supplies text and selects an existing deterministic run
 Phase 4A adds fifteen integration scenarios under `src/simulation/control-plane/`. They exercise strict API submission and queries, append-only history, deterministic projection, operator review, provider and persistence failure, forged delivery and ACK bodies, late ACK isolation, restart/replay, no valid route, and conflicting persisted state.
 
 All external inputs remain command intent. They cannot contain runtime events, graph state, autonomy budgets, route history, execution identity, capabilities, ACK evidence, or delivery state. Run the suite with `npm run control-plane -- compare` and its ten-replay gate with `npm run control-plane -- determinism`.
+
+## 15. Phase 4B operator-dashboard outcomes
+
+Phase 4B adds eighteen application and rendering scenarios under `src/dashboard/`. They cover verified success, cellular-to-LoRa recovery, semantic ambiguity, prompt injection, approved and rejected mission updates, pending review, forged delivery and ACK fields, stale and wrong-execution ACKs, later valid ACK isolation, no available route, provider fallback, persistence failure, restart reconstruction, conflicting persistence, and unsupported cancellation.
+
+The dashboard scenarios submit the same Phase 4A commands and render the same Phase 4A projections used by the control-plane suite. UI selection and form state never become runtime state. Run summaries with `npm run dashboard:scenarios -- compare` and the eighteen-scenario, ten-replay gate with `npm run dashboard:scenarios -- determinism`.

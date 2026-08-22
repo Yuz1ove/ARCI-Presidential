@@ -35,3 +35,4 @@ export * from "./simulation/intelligence/schema.js";
 export * from "./simulation/control-plane/determinism.js";
 export * from "./simulation/control-plane/engine.js";
 export * from "./simulation/control-plane/schema.js";
+export * from "./dashboard/index.js";
