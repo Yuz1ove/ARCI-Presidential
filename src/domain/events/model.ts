@@ -7,8 +7,10 @@ export const domainEventTypeSchema = z.enum([
   "mission.delivered",
   "observation.received",
   "observation.normalized",
+  "observation.ignored",
   "situation.changed",
   "route.degraded",
+  "route.invalidated",
   "planning.started",
   "route.candidates_scored",
   "policy.approved",
@@ -18,10 +20,17 @@ export const domainEventTypeSchema = z.enum([
   "execution.attempt_accepted",
   "execution.attempt_failed",
   "execution.attempt_timed_out",
+  "execution.result_ignored",
   "verification.started",
   "verification.ack_received",
+  "verification.ack_ignored",
   "verification.failed",
   "verification.indeterminate",
+  "adaptation.started",
+  "adaptation.decided",
+  "runtime.state_updated",
+  "runtime.completed",
+  "runtime.failed",
 ]);
 export type DomainEventType = z.infer<typeof domainEventTypeSchema>;
 

@@ -105,3 +105,5 @@ An ACK contains `ackId`, `messageId`, `executionId`, `routeId`, receive time, an
 Phase 1 reuses the canonical Phase 0 vocabulary, including observation, planning, policy, route update, execution, verification, and mission facts. The in-memory store is append-only, assigns deterministic sequence numbers, rejects duplicate event IDs, and queries by correlation ID or event type. Causation IDs form an inspectable chain.
 
 Metrics are intentionally minimal: candidates evaluated, deterministic virtual route-selection latency, execution attempts, verified-delivery flag, and executed policy violations. They are calculated by the pipeline and never fixture literals.
+
+Phase 2 reuses these contracts without replacement. Its orchestration, observation normalization, adaptation, idempotency, and termination guarantees are documented in [Autonomous StarryRuntime](starry-runtime.md).

@@ -8,11 +8,11 @@ StarryLink is an AI-native communication system for disasters, weak networks, ou
 
 Its intelligence is not a chatbot and does not merely recommend a radio. **Starry Intelligence decides and coordinates communication under uncertainty.**
 
-## Phase 1 status
+## Phase 2 status
 
-This repository now contains **Phase 1 — Domain Engine + Scenario Engine**. Phase 0 established the architecture baseline; Phase 1 implements the deterministic communication world, bounded directed-graph routing, independent policy validation, simulated execution, correlated ACK verification, canonical events, and input-only scenario fixtures.
+This repository now contains **Phase 2 — Autonomous StarryRuntime**. Phase 1 established the deterministic communication world, bounded directed-graph routing, independent policy validation, simulated execution, correlated ACK verification, canonical events, and input-only scenario fixtures. Phase 2 connects those modules through a bounded, event-driven `Observe → Understand → Plan → Act → Verify → Adapt` lifecycle.
 
-The autonomous `StarryRuntime`, provider integrations, live transports, production persistence, user interfaces, and visual effects remain proposed for later phases. Phase 1 deliberately contains no LLM or UI.
+The runtime has deterministic simulated observations, typed adaptation triggers, retry/replan/deadline bounds, external-event idempotency, stale ACK protection, append-only causal events, autonomous failover scenarios, and ten-replay determinism checks. It deliberately contains no LLM, live transport, hardware integration, production persistence, or UI.
 
 ## Run the domain simulation
 
@@ -21,6 +21,9 @@ npm install
 npm run scenario -- normal
 npm run scenario -- cellular-failure
 npm run scenario -- compare
+npm run runtime -- sequential-degradation
+npm run runtime -- compare
+npm run runtime -- determinism
 ```
 
 Quality gates:
@@ -32,7 +35,7 @@ npm test
 npm run build
 ```
 
-The CLI output is calculated by the same domain, policy, routing, execution, and verification modules used by the tests. Fixtures never contain a selected route or delivery result. See [Domain engine](docs/domain-engine.md) for the implemented contracts and formulas.
+The CLI output is calculated by the same domain, policy, routing, execution, verification, observation, and adaptation modules used by the tests. Fixtures never contain a selected route or delivery result. See [Domain engine](docs/domain-engine.md) for Phase 1 contracts and [Autonomous StarryRuntime](docs/starry-runtime.md) for Phase 2 lifecycle and safety guarantees.
 
 ## The system in one loop
 
@@ -64,6 +67,8 @@ Execution → Verification
 ```
 
 An LLM may interpret a mission or explain a decision. It may not bypass hard constraints or directly control all routing. Invalid structured output falls back to deterministic policy.
+
+That hybrid stack is future architecture. Phase 2 implements only its deterministic safety, routing, policy, execution, verification, and adaptation layers; constrained language-model integration is deferred to Phase 3.
 
 ## Product surfaces
 
@@ -142,17 +147,18 @@ The six Phase 0 documents are the source of truth for implementation:
 - [Agent system](docs/agent-system.md) — logical agents, hybrid decision pipeline, memory, verification, recovery, and provider contracts.
 - [Design system](docs/design-system.md) — visual language, tokens, typography, surfaces, motion, responsiveness, and accessibility.
 - [Scenarios](docs/scenarios.md) — simulation model, five core scenarios, transitions, fixtures, and acceptance checks.
+- [Autonomous StarryRuntime](docs/starry-runtime.md) — Phase 2 lifecycle, bounds, observation normalization, adaptation, events, idempotency, and termination.
 - [Hackathon alignment](docs/hackathon-alignment.md) — evidence for autonomous, adaptive, AI-native, domain-aware, safe operation and Codex's role.
 
 ## Roadmap
 
 - **Phase 0 — Architecture:** align the six design documents and repository contract.
 - **Phase 1 — Domain Engine:** implement testable states, network graph, policy engine, routing decisions, verification, and Scenario Engine.
-- **Phase 2 — Agent:** implement the bounded `StarryRuntime` loop and operational memory.
-- **Phase 3 — Prototype UI:** build Landing, Starry Core, Command Space, topology, and Intelligence Timeline for function before polish.
+- **Phase 2 — Autonomous StarryRuntime:** implement the bounded event-driven runtime, autonomous adaptation, idempotency, and deterministic replay.
+- **Phase 3 — Communication Intelligence:** add semantic mission understanding, incident interpretation, operator explanations, recommendations, and constrained LLM integration.
 - **Phase 4 — Scenario Demo:** connect all five scenarios to real state transitions, autonomous decisions, execution, and verification.
 - **Phase 5 — Visual System:** add restrained motion, particles, lighting, transitions, and typography refinement with adaptive quality.
 - **Phase 6 — Mobile Field Interface:** implement the four essential Field Link actions and weak-network feedback.
 - **Phase 7 — Hardening:** address performance, accessibility, reduced motion, offline behavior, security, error states, and edge cases.
 
-The next implementation objective is Phase 2: connect these Phase 1 modules through one bounded, event-driven `StarryRuntime`. Authentication, billing, CMS, production carrier infrastructure, real satellite or LoRa hardware, drone control, a vector database, and a complex multi-agent framework remain intentionally deferred.
+The next implementation objective is **Phase 3 — Communication Intelligence**. Authentication, billing, CMS, production carrier infrastructure, real satellite or LoRa hardware, drone control, a vector database, production UI, and unconstrained agent frameworks remain deferred.

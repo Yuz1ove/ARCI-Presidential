@@ -1,12 +1,12 @@
 # StarryLink Next Architecture
 
-Status: Phase 0 design baseline with Phase 1 domain implementation
+Status: Phase 0 design baseline with Phase 1 domain and Phase 2 runtime implementation
 
 Primary implementation language: TypeScript
 
 Scope: the autonomous routing engine, its API and persistence boundaries, and the two user experiences that consume it
 
-Phase 1 implements the pure domain slice under `src/`: validated state schemas, a directed graph, bounded route discovery, deterministic policy/scoring, an independent final validator, simulated execution, ACK verification, an in-memory event store, scenario fixtures, and a CLI. It does not implement the autonomous runtime lifecycle described later in this document. See `docs/domain-engine.md` for the exact implemented formulas and limits.
+Phase 1 implements the pure domain slice under `src/`: validated state schemas, a directed graph, bounded route discovery, deterministic policy/scoring, an independent final validator, simulated execution, ACK verification, an in-memory event store, scenario fixtures, and a CLI. Phase 2 extends that slice with `src/runtime/`: a typed lifecycle, normalized simulation observations, bounded adaptation, event idempotency, stale-event protection, deterministic metrics, autonomous fixtures, and a runtime CLI. See `docs/domain-engine.md` for the core formulas and `docs/starry-runtime.md` for the runtime contract.
 
 ## 1. Purpose
 
@@ -47,7 +47,7 @@ flowchart LR
   API --> Runtime["StarryRuntime"]
   Sensors["Telemetry adapters"] --> Runtime
   Runtime --> Policy["Policy + routing engine"]
-  Runtime --> Provider["Optional AI provider"]
+  Runtime -. "Phase 3 only" .-> Provider["Optional AI provider"]
   Runtime --> Transport["Transport gateway"]
   Transport --> Network["Simulated or live network"]
   Runtime --> Store["Operational store"]
