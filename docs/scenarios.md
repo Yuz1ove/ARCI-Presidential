@@ -1,10 +1,10 @@
 # Scenario Engine and Acceptance Fixtures
 
-Status: Phase 0 behavioral contract
+Status: Phase 0 behavioral contract with Phase 1 executable fixtures
 
 Purpose: deterministic demo fixtures and executable-test specifications for one shared runtime
 
-The five scenarios are not five scripted presentations. Each fixture supplies observations, mission changes, and transport outcomes to the same sequence:
+The five product scenarios are not five scripted presentations. Phase 1 also adds one negative relay-failure fixture. Each fixture supplies observations, mission changes, and transport outcomes to the same sequence:
 
 ```text
 Scenario fixture
@@ -27,22 +27,22 @@ Every fixture resolves to the same input families:
 
 | Input | Required values | Notes |
 | --- | --- | --- |
-| Environment | channel availability, signal, latency, packet loss, bandwidth, energy/cost indices, relay topology, congestion, weather risk | signal is 0–100; loss is 0–1; latency is ms |
+| Environment | channel availability, signal, latency, packet loss, bandwidth, energy/cost indices, relay topology, congestion, weather risk | signal and loss are 0–1; latency is ms |
 | Device | battery, location, interfaces, signal readings, estimated runtime | absence is represented as `null`, not zero |
 | Mission | type, urgency, payload bytes, reliability requirement, latency tolerance | urgency and reliability are normalized |
 | Memory | recent route success, latency, failures, and sample count | operational memory only; no chat history |
 | Runtime | current route, autonomous mode, simulation mode, deterministic seed | fixture time uses a virtual monotonic clock |
 | Events | timestamped environment, mission, or transport result changes | events never name a desired UI state |
 
-Canonical route IDs used by these fixtures:
+Phase 1 route IDs are derived from the ordered edge path and therefore cannot be fixture instructions. Examples:
 
-- `cellular:5g`
-- `wifi:direct`
-- `lora:relay:LR-12`
-- `drone:relay:DR-07`
-- `satellite:SAT-APAC-2`
+- `route:edge:cellular-access.edge:cellular-backhaul`
+- `route:edge:wifi-access.edge:wifi-backhaul`
+- `route:edge:lora-access.edge:lora-backhaul`
+- `route:edge:drone-access.edge:drone-backhaul`
+- `route:edge:satellite-uplink.edge:satellite-downlink`
 
-Channel `energyCost` and `monetaryCost` are normalized indices from 0 (lowest) to 100 (highest). They are inputs to the scoring layer, not real energy or currency measurements.
+Channel `energyCost` and `monetaryCost` are normalized indices from 0 (lowest) to 1 (highest). They are simulation inputs to the scoring layer, not real energy or currency measurements.
 
 ### 1.1 Policy constants used by expected outcomes
 
@@ -50,7 +50,7 @@ These constants make the fixtures deterministic while leaving room to improve th
 
 | Policy | Contract |
 | --- | --- |
-| Cellular degradation | degraded when signal ≤20% or packet loss ≥0.35 |
+| Cellular degradation | degraded when signal ≤0.20 or packet loss ≥0.35 |
 | Hard channel failure | unavailable, relay offline, or packet loss ≥0.60 |
 | Low-battery mode | battery <10% |
 | Battery reserve | do not knowingly plan an action estimated to take the device below 5% |
@@ -102,12 +102,12 @@ Prove that the runtime does not manufacture drama in a healthy environment. It s
   "seed": 1101,
   "virtualTime": "2026-08-14T02:00:00.000Z",
   "environment": {
-    "cellular": { "status": "available", "signalPercent": 92, "latencyMs": 80, "packetLoss": 0.05, "bandwidthKbps": 18000, "energyCost": 32, "monetaryCost": 5 },
-    "wifi": { "status": "available", "signalPercent": 87, "latencyMs": 42, "packetLoss": 0.09, "bandwidthKbps": 28000, "energyCost": 22, "monetaryCost": 0 },
-    "lora": { "status": "available", "signalPercent": 76, "latencyMs": 650, "packetLoss": 0.08, "bandwidthKbps": 0.3, "energyCost": 9, "monetaryCost": 0 },
-    "satellite": { "status": "available", "signalPercent": 64, "latencyMs": 1400, "packetLoss": 0.12, "bandwidthKbps": 1, "energyCost": 70, "monetaryCost": 95 },
-    "nearbyRelays": [{ "id": "LR-12", "kind": "lora", "status": "online", "hopCount": 1, "signalPercent": 76 }],
-    "droneRelays": [{ "id": "DR-07", "kind": "drone", "status": "standby", "hopCount": 1, "signalPercent": 68 }],
+    "cellular": { "status": "available", "signalStrength": 0.92, "latencyMs": 80, "packetLoss": 0.05, "bandwidthKbps": 18000, "energyCost": 0.32, "monetaryCost": 0.05 },
+    "wifi": { "status": "available", "signalStrength": 0.87, "latencyMs": 42, "packetLoss": 0.09, "bandwidthKbps": 28000, "energyCost": 0.22, "monetaryCost": 0 },
+    "lora": { "status": "available", "signalStrength": 0.76, "latencyMs": 650, "packetLoss": 0.08, "bandwidthKbps": 0.3, "energyCost": 0.09, "monetaryCost": 0 },
+    "satellite": { "status": "available", "signalStrength": 0.64, "latencyMs": 1400, "packetLoss": 0.12, "bandwidthKbps": 1, "energyCost": 0.70, "monetaryCost": 0.95 },
+    "nearbyRelays": [{ "id": "LR-12", "kind": "lora", "status": "online", "hopCount": 1, "signalStrength": 0.76 }],
+    "droneRelays": [{ "id": "DR-07", "kind": "drone", "status": "standby", "hopCount": 1, "signalStrength": 0.68 }],
     "congestion": 0.12,
     "weatherRisk": 0.08
   },
@@ -116,7 +116,7 @@ Prove that the runtime does not manufacture drama in a healthy environment. It s
     "batteryPercent": 81,
     "location": { "latitude": 25.033, "longitude": 121.5654 },
     "networkInterfaces": ["cellular", "wifi", "lora", "satellite"],
-    "signalStrength": { "cellular": 92, "wifi": 87, "lora": 76, "satellite": 64 },
+    "signalStrength": { "cellular": 0.92, "wifi": 0.87, "lora": 0.76, "satellite": 0.64 },
     "estimatedRuntimeMinutes": 612
   },
   "mission": {
@@ -186,12 +186,12 @@ Prove that degraded observations—not a presentation shortcut—cause an autono
   "seed": 2202,
   "virtualTime": "2026-08-14T02:00:10.000Z",
   "environment": {
-    "cellular": { "status": "degraded", "signalPercent": 18, "latencyMs": 920, "packetLoss": 0.42, "bandwidthKbps": 480, "energyCost": 54, "monetaryCost": 5 },
-    "wifi": { "status": "unavailable", "signalPercent": 0, "latencyMs": null, "packetLoss": 1, "bandwidthKbps": 0, "energyCost": 0, "monetaryCost": 0 },
-    "lora": { "status": "available", "signalPercent": 76, "latencyMs": 720, "packetLoss": 0.08, "bandwidthKbps": 0.3, "energyCost": 9, "monetaryCost": 0 },
-    "satellite": { "status": "available", "signalPercent": 64, "latencyMs": 1400, "packetLoss": 0.12, "bandwidthKbps": 1, "energyCost": 70, "monetaryCost": 95 },
-    "nearbyRelays": [{ "id": "LR-12", "kind": "lora", "status": "online", "hopCount": 1, "signalPercent": 76 }],
-    "droneRelays": [{ "id": "DR-07", "kind": "drone", "status": "standby", "hopCount": 1, "signalPercent": 68 }],
+    "cellular": { "status": "degraded", "signalStrength": 0.18, "latencyMs": 920, "packetLoss": 0.42, "bandwidthKbps": 480, "energyCost": 0.54, "monetaryCost": 0.05 },
+    "wifi": { "status": "unavailable", "signalStrength": 0, "latencyMs": 180, "packetLoss": 1, "bandwidthKbps": 12000, "energyCost": 0.35, "monetaryCost": 0.10 },
+    "lora": { "status": "available", "signalStrength": 0.76, "latencyMs": 720, "packetLoss": 0.08, "bandwidthKbps": 0.3, "energyCost": 0.09, "monetaryCost": 0 },
+    "satellite": { "status": "available", "signalStrength": 0.64, "latencyMs": 1400, "packetLoss": 0.12, "bandwidthKbps": 1, "energyCost": 0.70, "monetaryCost": 0.95 },
+    "nearbyRelays": [{ "id": "LR-12", "kind": "lora", "status": "online", "hopCount": 1, "signalStrength": 0.76 }],
+    "droneRelays": [{ "id": "DR-07", "kind": "drone", "status": "standby", "hopCount": 1, "signalStrength": 0.68 }],
     "congestion": 0.61,
     "weatherRisk": 0.12
   },
@@ -200,7 +200,7 @@ Prove that degraded observations—not a presentation shortcut—cause an autono
     "batteryPercent": 78,
     "location": { "latitude": 25.033, "longitude": 121.5654 },
     "networkInterfaces": ["cellular", "wifi", "lora", "satellite"],
-    "signalStrength": { "cellular": 18, "wifi": 0, "lora": 76, "satellite": 64 },
+    "signalStrength": { "cellular": 0.18, "wifi": 0, "lora": 0.76, "satellite": 0.64 },
     "estimatedRuntimeMinutes": 584
   },
   "mission": {
@@ -273,11 +273,11 @@ Prove that a critical mission can leave a failing local relay and use costly sat
   "seed": 3303,
   "virtualTime": "2026-08-14T02:00:25.000Z",
   "environment": {
-    "cellular": { "status": "unavailable", "signalPercent": 0, "latencyMs": null, "packetLoss": 1, "bandwidthKbps": 0, "energyCost": 0, "monetaryCost": 0 },
-    "wifi": { "status": "unavailable", "signalPercent": 0, "latencyMs": null, "packetLoss": 1, "bandwidthKbps": 0, "energyCost": 0, "monetaryCost": 0 },
-    "lora": { "status": "limited", "signalPercent": 44, "latencyMs": 1200, "packetLoss": 0.3, "bandwidthKbps": 0.15, "energyCost": 12, "monetaryCost": 0 },
-    "satellite": { "status": "available", "signalPercent": 71, "latencyMs": 1550, "packetLoss": 0.04, "bandwidthKbps": 1, "energyCost": 74, "monetaryCost": 95 },
-    "nearbyRelays": [{ "id": "LR-12", "kind": "lora", "status": "online", "hopCount": 1, "signalPercent": 44 }],
+    "cellular": { "status": "unavailable", "signalStrength": 0, "latencyMs": 80, "packetLoss": 1, "bandwidthKbps": 20000, "energyCost": 0.30, "monetaryCost": 0.12 },
+    "wifi": { "status": "unavailable", "signalStrength": 0, "latencyMs": 180, "packetLoss": 1, "bandwidthKbps": 12000, "energyCost": 0.35, "monetaryCost": 0.10 },
+    "lora": { "status": "limited", "signalStrength": 0.44, "latencyMs": 1200, "packetLoss": 0.3, "bandwidthKbps": 0.15, "energyCost": 0.12, "monetaryCost": 0 },
+    "satellite": { "status": "available", "signalStrength": 0.71, "latencyMs": 1550, "packetLoss": 0.04, "bandwidthKbps": 1, "energyCost": 0.74, "monetaryCost": 0.95 },
+    "nearbyRelays": [{ "id": "LR-12", "kind": "lora", "status": "online", "hopCount": 1, "signalStrength": 0.44 }],
     "droneRelays": [],
     "congestion": 0.84,
     "weatherRisk": 0.72
@@ -287,7 +287,7 @@ Prove that a critical mission can leave a failing local relay and use costly sat
     "batteryPercent": 46,
     "location": { "latitude": 25.033, "longitude": 121.5654 },
     "networkInterfaces": ["cellular", "wifi", "lora", "satellite"],
-    "signalStrength": { "cellular": 0, "wifi": 0, "lora": 44, "satellite": 71 },
+    "signalStrength": { "cellular": 0, "wifi": 0, "lora": 0.44, "satellite": 0.71 },
     "estimatedRuntimeMinutes": 286
   },
   "mission": {
@@ -364,12 +364,12 @@ Prove that battery state changes route policy, retry cadence, payload strategy, 
   "seed": 4404,
   "virtualTime": "2026-08-14T02:00:40.000Z",
   "environment": {
-    "cellular": { "status": "available", "signalPercent": 66, "latencyMs": 110, "packetLoss": 0.08, "bandwidthKbps": 7200, "energyCost": 38, "monetaryCost": 5 },
-    "wifi": { "status": "unavailable", "signalPercent": 0, "latencyMs": null, "packetLoss": 1, "bandwidthKbps": 0, "energyCost": 0, "monetaryCost": 0 },
-    "lora": { "status": "available", "signalPercent": 72, "latencyMs": 780, "packetLoss": 0.09, "bandwidthKbps": 0.3, "energyCost": 8, "monetaryCost": 0 },
-    "satellite": { "status": "available", "signalPercent": 63, "latencyMs": 1500, "packetLoss": 0.1, "bandwidthKbps": 1, "energyCost": 76, "monetaryCost": 95 },
-    "nearbyRelays": [{ "id": "LR-12", "kind": "lora", "status": "online", "hopCount": 1, "signalPercent": 72 }],
-    "droneRelays": [{ "id": "DR-07", "kind": "drone", "status": "standby", "hopCount": 1, "signalPercent": 70 }],
+    "cellular": { "status": "available", "signalStrength": 0.66, "latencyMs": 110, "packetLoss": 0.08, "bandwidthKbps": 7200, "energyCost": 0.38, "monetaryCost": 0.05 },
+    "wifi": { "status": "unavailable", "signalStrength": 0, "latencyMs": 180, "packetLoss": 1, "bandwidthKbps": 12000, "energyCost": 0.35, "monetaryCost": 0.10 },
+    "lora": { "status": "available", "signalStrength": 0.72, "latencyMs": 780, "packetLoss": 0.09, "bandwidthKbps": 0.3, "energyCost": 0.08, "monetaryCost": 0 },
+    "satellite": { "status": "available", "signalStrength": 0.63, "latencyMs": 1500, "packetLoss": 0.1, "bandwidthKbps": 1, "energyCost": 0.76, "monetaryCost": 0.95 },
+    "nearbyRelays": [{ "id": "LR-12", "kind": "lora", "status": "online", "hopCount": 1, "signalStrength": 0.72 }],
+    "droneRelays": [{ "id": "DR-07", "kind": "drone", "status": "standby", "hopCount": 1, "signalStrength": 0.70 }],
     "congestion": 0.24,
     "weatherRisk": 0.16
   },
@@ -378,7 +378,7 @@ Prove that battery state changes route policy, retry cadence, payload strategy, 
     "batteryPercent": 7,
     "location": { "latitude": 25.033, "longitude": 121.5654 },
     "networkInterfaces": ["cellular", "wifi", "lora", "satellite"],
-    "signalStrength": { "cellular": 66, "wifi": 0, "lora": 72, "satellite": 63 },
+    "signalStrength": { "cellular": 0.66, "wifi": 0, "lora": 0.72, "satellite": 0.63 },
     "estimatedRuntimeMinutes": 23
   },
   "mission": {
@@ -456,12 +456,12 @@ Prove mission-aware escalation, high-reliability policy, two autonomous recoveri
   "seed": 5505,
   "virtualTime": "2026-08-14T02:01:00.000Z",
   "environment": {
-    "cellular": { "status": "unavailable", "signalPercent": 0, "latencyMs": null, "packetLoss": 1, "bandwidthKbps": 0, "energyCost": 0, "monetaryCost": 0 },
-    "wifi": { "status": "unavailable", "signalPercent": 0, "latencyMs": null, "packetLoss": 1, "bandwidthKbps": 0, "energyCost": 0, "monetaryCost": 0 },
-    "lora": { "status": "available", "signalPercent": 74, "latencyMs": 760, "packetLoss": 0.12, "bandwidthKbps": 0.3, "energyCost": 10, "monetaryCost": 0 },
-    "satellite": { "status": "available", "signalPercent": 78, "latencyMs": 1500, "packetLoss": 0.03, "bandwidthKbps": 1, "energyCost": 78, "monetaryCost": 95 },
-    "nearbyRelays": [{ "id": "LR-12", "kind": "lora", "status": "online", "hopCount": 1, "signalPercent": 74 }],
-    "droneRelays": [{ "id": "DR-07", "kind": "drone", "status": "online", "hopCount": 1, "signalPercent": 82 }],
+    "cellular": { "status": "unavailable", "signalStrength": 0, "latencyMs": 80, "packetLoss": 1, "bandwidthKbps": 20000, "energyCost": 0.30, "monetaryCost": 0.12 },
+    "wifi": { "status": "unavailable", "signalStrength": 0, "latencyMs": 180, "packetLoss": 1, "bandwidthKbps": 12000, "energyCost": 0.35, "monetaryCost": 0.10 },
+    "lora": { "status": "available", "signalStrength": 0.74, "latencyMs": 760, "packetLoss": 0.12, "bandwidthKbps": 0.3, "energyCost": 0.10, "monetaryCost": 0 },
+    "satellite": { "status": "available", "signalStrength": 0.78, "latencyMs": 1500, "packetLoss": 0.03, "bandwidthKbps": 1, "energyCost": 0.78, "monetaryCost": 0.95 },
+    "nearbyRelays": [{ "id": "LR-12", "kind": "lora", "status": "online", "hopCount": 1, "signalStrength": 0.74 }],
+    "droneRelays": [{ "id": "DR-07", "kind": "drone", "status": "online", "hopCount": 1, "signalStrength": 0.82 }],
     "congestion": 0.68,
     "weatherRisk": 0.31
   },
@@ -470,7 +470,7 @@ Prove mission-aware escalation, high-reliability policy, two autonomous recoveri
     "batteryPercent": 17,
     "location": { "latitude": 25.033, "longitude": 121.5654 },
     "networkInterfaces": ["cellular", "wifi", "lora", "satellite"],
-    "signalStrength": { "cellular": 0, "wifi": 0, "lora": 74, "satellite": 78 },
+    "signalStrength": { "cellular": 0, "wifi": 0, "lora": 0.74, "satellite": 0.78 },
     "estimatedRuntimeMinutes": 84
   },
   "mission": {
@@ -609,3 +609,18 @@ The five headline fixtures are incomplete without these test mutations:
 - Duplicate execution request → idempotency key prevents a second transport action.
 
 These variants prove failure awareness and action safety; they are not optional visual edge cases.
+
+## 11. Phase 1 executable outcomes
+
+The strict executable source is `src/simulation/fixtures/scenarios.ts`; the longer examples above remain the cross-phase acceptance narrative and use the same canonical 0–1 units. Phase 1 calculates these results without route fields in fixtures:
+
+| Fixture | Calculated first medium | Execution | Verification | Executed policy violations |
+| --- | --- | --- | --- | --- |
+| Normal | Cellular | Delivered | Verified | 0 |
+| Cellular Failure | LoRa | Delivered | Verified | 0 |
+| Infrastructure Collapse | Satellite | Delivered | Verified | 0 |
+| Low Battery | LoRa | Delivered | Verified | 0 |
+| Medical Emergency | Satellite | Delivered | Verified | 0 |
+| Relay Failure After Selection | LoRa | Failed | Unverified | 0 |
+
+The medical and infrastructure recovery sequences described above require the bounded adaptation loop planned for Phase 2. Phase 1 intentionally proves the route calculation and exposes an in-flight failure as typed execution, verification, and event evidence without automatically replanning.

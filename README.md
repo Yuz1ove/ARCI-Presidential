@@ -8,11 +8,31 @@ StarryLink is an AI-native communication system for disasters, weak networks, ou
 
 Its intelligence is not a chatbot and does not merely recommend a radio. **Starry Intelligence decides and coordinates communication under uncertainty.**
 
-## Phase 0 status
+## Phase 1 status
 
-This repository is currently in **Phase 0 — Architecture**. The goal of this phase is to establish one coherent product, system, agent, visual, simulation, and hackathon story before implementation begins.
+This repository now contains **Phase 1 — Domain Engine + Scenario Engine**. Phase 0 established the architecture baseline; Phase 1 implements the deterministic communication world, bounded directed-graph routing, independent policy validation, simulated execution, correlated ACK verification, canonical events, and input-only scenario fixtures.
 
-The runtime, interfaces, integrations, and visual effects described below are proposed—not claimed as implemented in Phase 0. The next milestone is **Phase 1 — Domain Engine**, including the Scenario Engine needed to test real state-driven adaptation.
+The autonomous `StarryRuntime`, provider integrations, live transports, production persistence, user interfaces, and visual effects remain proposed for later phases. Phase 1 deliberately contains no LLM or UI.
+
+## Run the domain simulation
+
+```bash
+npm install
+npm run scenario -- normal
+npm run scenario -- cellular-failure
+npm run scenario -- compare
+```
+
+Quality gates:
+
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
+```
+
+The CLI output is calculated by the same domain, policy, routing, execution, and verification modules used by the tests. Fixtures never contain a selected route or delivery result. See [Domain engine](docs/domain-engine.md) for the implemented contracts and formulas.
 
 ## The system in one loop
 
@@ -135,4 +155,4 @@ The six Phase 0 documents are the source of truth for implementation:
 - **Phase 6 — Mobile Field Interface:** implement the four essential Field Link actions and weak-network feedback.
 - **Phase 7 — Hardening:** address performance, accessibility, reduced motion, offline behavior, security, error states, and edge cases.
 
-The first implementation objective is narrow: prove that Starry Intelligence can autonomously replan communication after environmental conditions change. Authentication, billing, CMS, production carrier infrastructure, real satellite or LoRa hardware, drone control, a vector database, and a complex multi-agent framework are intentionally deferred.
+The next implementation objective is Phase 2: connect these Phase 1 modules through one bounded, event-driven `StarryRuntime`. Authentication, billing, CMS, production carrier infrastructure, real satellite or LoRa hardware, drone control, a vector database, and a complex multi-agent framework remain intentionally deferred.
