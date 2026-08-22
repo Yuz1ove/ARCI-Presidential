@@ -8,11 +8,11 @@ StarryLink is an AI-native communication system for disasters, weak networks, ou
 
 Its intelligence is not a chatbot and does not merely recommend a radio. **Starry Intelligence decides and coordinates communication under uncertainty.**
 
-## Phase 2 status
+## Phase 3 status
 
-This repository now contains **Phase 2 — Autonomous StarryRuntime**. Phase 1 established the deterministic communication world, bounded directed-graph routing, independent policy validation, simulated execution, correlated ACK verification, canonical events, and input-only scenario fixtures. Phase 2 connects those modules through a bounded, event-driven `Observe → Understand → Plan → Act → Verify → Adapt` lifecycle.
+This repository now contains **Phase 3 — Communication Intelligence** over the sealed Phase 2 autonomous runtime. The new bounded layer adds typed semantic mission understanding, ambiguity and provenance, evidence-backed incident interpretation and explanations, non-executing recommendations, a provider-neutral model boundary, strict structured output, and deterministic fallback.
 
-The runtime has deterministic simulated observations, typed adaptation triggers, retry/replan/deadline bounds, external-event idempotency, stale ACK protection, append-only causal events, autonomous failover scenarios, and ten-replay determinism checks. It deliberately contains no LLM, live transport, hardware integration, production persistence, or UI.
+The deterministic runtime remains authoritative for routing, hard policy, final validation, execution capabilities, transport simulation, ACK verification, autonomy bounds, and terminal state. Phase 3 has no live provider dependency, credentials, hardware integration, production persistence, or UI.
 
 ## Run the domain simulation
 
@@ -24,6 +24,9 @@ npm run scenario -- compare
 npm run runtime -- sequential-degradation
 npm run runtime -- compare
 npm run runtime -- determinism
+npm run intelligence -- natural-language-medical-emergency
+npm run intelligence -- compare
+npm run intelligence -- determinism
 ```
 
 Quality gates:
@@ -35,7 +38,7 @@ npm test
 npm run build
 ```
 
-The CLI output is calculated by the same domain, policy, routing, execution, verification, observation, and adaptation modules used by the tests. Fixtures never contain a selected route or delivery result. See [Domain engine](docs/domain-engine.md) for Phase 1 contracts and [Autonomous StarryRuntime](docs/starry-runtime.md) for Phase 2 lifecycle and safety guarantees.
+The CLI output is calculated by the same domain, policy, routing, execution, verification, observation, adaptation, and intelligence modules used by the tests. Fixtures never contain a selected route or delivery result. See [Domain engine](docs/domain-engine.md) for Phase 1 contracts, [Autonomous StarryRuntime](docs/starry-runtime.md) for Phase 2 lifecycle guarantees, and [Communication Intelligence](docs/communication-intelligence.md) for the Phase 3 trust boundary.
 
 ## The system in one loop
 
@@ -68,7 +71,7 @@ Execution → Verification
 
 An LLM may interpret a mission or explain a decision. It may not bypass hard constraints or directly control all routing. Invalid structured output falls back to deterministic policy.
 
-That hybrid stack is future architecture. Phase 2 implements only its deterministic safety, routing, policy, execution, verification, and adaptation layers; constrained language-model integration is deferred to Phase 3.
+Phase 3 implements the constrained semantic and explanation boundary. It does not move routing, policy, execution, verification, or adaptation authority into a language model.
 
 ## Product surfaces
 
@@ -148,6 +151,7 @@ The six Phase 0 documents are the source of truth for implementation:
 - [Design system](docs/design-system.md) — visual language, tokens, typography, surfaces, motion, responsiveness, and accessibility.
 - [Scenarios](docs/scenarios.md) — simulation model, five core scenarios, transitions, fixtures, and acceptance checks.
 - [Autonomous StarryRuntime](docs/starry-runtime.md) — Phase 2 lifecycle, bounds, observation normalization, adaptation, events, idempotency, and termination.
+- [Communication Intelligence](docs/communication-intelligence.md) — Phase 3 semantic model, evidence, explanations, recommendations, LLM boundary, fallback, and security guarantees.
 - [Hackathon alignment](docs/hackathon-alignment.md) — evidence for autonomous, adaptive, AI-native, domain-aware, safe operation and Codex's role.
 
 ## Roadmap
@@ -156,9 +160,9 @@ The six Phase 0 documents are the source of truth for implementation:
 - **Phase 1 — Domain Engine:** implement testable states, network graph, policy engine, routing decisions, verification, and Scenario Engine.
 - **Phase 2 — Autonomous StarryRuntime:** implement the bounded event-driven runtime, autonomous adaptation, idempotency, and deterministic replay.
 - **Phase 3 — Communication Intelligence:** add semantic mission understanding, incident interpretation, operator explanations, recommendations, and constrained LLM integration.
-- **Phase 4 — Scenario Demo:** connect all five scenarios to real state transitions, autonomous decisions, execution, and verification.
+- **Phase 4 — Integration & Operator Interface:** connect a production API boundary, human-in-the-loop operator surface, persistent runtime history, observability, and real transport adapters without changing deterministic authority.
 - **Phase 5 — Visual System:** add restrained motion, particles, lighting, transitions, and typography refinement with adaptive quality.
 - **Phase 6 — Mobile Field Interface:** implement the four essential Field Link actions and weak-network feedback.
 - **Phase 7 — Hardening:** address performance, accessibility, reduced motion, offline behavior, security, error states, and edge cases.
 
-The next implementation objective is **Phase 3 — Communication Intelligence**. Authentication, billing, CMS, production carrier infrastructure, real satellite or LoRa hardware, drone control, a vector database, production UI, and unconstrained agent frameworks remain deferred.
+The next implementation objective is **Phase 4 — Integration & Operator Interface**. Authentication, billing, CMS, production carrier infrastructure, real satellite or LoRa hardware, drone control, a vector database, and unconstrained agent frameworks remain deferred.

@@ -643,3 +643,9 @@ Phase 2 fixtures live in `src/simulation/runtime/fixtures.ts`. They contain only
 | Oscillating Topology | Cellular | Cellular and LoRa alternate | Bounded replans | Failed / Budget exhausted |
 
 Run these with `npm run runtime -- <fixture>`, `npm run runtime -- compare`, and `npm run runtime -- determinism`.
+
+## 13. Phase 3 communication intelligence outcomes
+
+Phase 3 adds ten deterministic intelligence fixtures under `src/simulation/intelligence/`. They cover natural-language medical interpretation, conservative ambiguity, prompt injection, cellular-to-LoRa incident explanation, late ACK identity, no valid route, provider failure, invalid model output, semantic priority update, and structured explanation determinism.
+
+The intelligence fixture supplies text and selects an existing deterministic runtime fixture where runtime evidence is required. It never supplies a selected route, execution capability, delivery result, ACK result, runtime budget, or terminal state. Run the suite with `npm run intelligence -- compare` and its ten-replay gate with `npm run intelligence -- determinism`.

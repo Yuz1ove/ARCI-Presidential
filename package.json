@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "intelligence": "tsx src/cli/intelligence.ts",
     "lint": "eslint .",
     "runtime": "tsx src/cli/runtime.ts",
     "scenario": "tsx src/cli/scenario.ts",

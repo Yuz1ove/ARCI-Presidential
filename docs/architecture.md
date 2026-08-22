@@ -1,6 +1,6 @@
 # StarryLink Next Architecture
 
-Status: Phase 0 design baseline with Phase 1 domain and Phase 2 runtime implementation
+Status: Phase 0 design baseline with Phase 1 domain, Phase 2 runtime, and bounded Phase 3 communication intelligence
 
 Primary implementation language: TypeScript
 
@@ -47,7 +47,8 @@ flowchart LR
   API --> Runtime["StarryRuntime"]
   Sensors["Telemetry adapters"] --> Runtime
   Runtime --> Policy["Policy + routing engine"]
-  Runtime -. "Phase 3 only" .-> Provider["Optional AI provider"]
+  Intelligence["Phase 3 typed intelligence"] -. "strict semantic proposal" .-> Runtime
+  Provider["Optional AI provider"] -. "untrusted structured output" .-> Intelligence
   Runtime --> Transport["Transport gateway"]
   Transport --> Network["Simulated or live network"]
   Runtime --> Store["Operational store"]

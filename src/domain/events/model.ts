@@ -31,6 +31,16 @@ export const domainEventTypeSchema = z.enum([
   "runtime.state_updated",
   "runtime.completed",
   "runtime.failed",
+  "intelligence.requested",
+  "mission.interpretation_started",
+  "mission.interpreted",
+  "mission.interpretation_rejected",
+  "incident.interpretation_started",
+  "incident.interpreted",
+  "recommendation.generated",
+  "explanation.generated",
+  "intelligence.provider_failed",
+  "intelligence.fallback_used",
 ]);
 export type DomainEventType = z.infer<typeof domainEventTypeSchema>;
 
