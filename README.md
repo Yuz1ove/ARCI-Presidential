@@ -8,11 +8,11 @@ StarryLink is an AI-native communication system for disasters, weak networks, ou
 
 Its intelligence is not a chatbot and does not merely recommend a radio. **Starry Intelligence decides and coordinates communication under uncertainty.**
 
-## Phase 4B status
+## Phase 4C status
 
-Phase 4A is sealed at `phase-4a-operator-control-plane-ready`. The working tree now contains **Phase 4B — Operator Dashboard**: a professional simulation console, typed application adapter, deterministic mission/read-model workspace, review queue, incident and timeline views, and eighteen dashboard scenarios.
+Phase 4B is sealed at `phase-4b-operator-dashboard-ready`. The working tree now contains **Phase 4C — Real-World Communication Integration Architecture**: provider-neutral transport contracts, strict external observation normalization, full ACK correlation, evidence replay/restart rules, an explicit credential/privacy boundary, and twenty deterministic integration scenarios.
 
-The deterministic runtime remains authoritative for routing, hard policy, final validation, execution capabilities, transport simulation, ACK verification, autonomy bounds, and terminal state. The React interface can submit only Phase 4A commands and render Phase 4A queries; it cannot issue execution authority or create delivery truth. Phase 4B has no live provider dependency, credentials, durable database, hardware integration, or production HTTP API.
+The deterministic runtime remains authoritative for routing, hard policy, final validation, execution capabilities, ACK verification, autonomy bounds, and terminal state. Adapters emit only `OBSERVED / UNTRUSTED_EXTERNAL / EVIDENCE_ONLY` records; even a fully correlated destination ACK remains non-authoritative until a future sealed-runtime ingestion path validates it. Phase 4C has no live provider dependency, credentials, durable database, hardware integration, or real network call.
 
 ## Run the domain simulation
 
@@ -33,6 +33,8 @@ npm run control-plane -- determinism
 npm run dashboard
 npm run dashboard:scenarios -- compare
 npm run dashboard:scenarios -- determinism
+npm run integration:scenarios -- compare
+npm run integration:scenarios -- determinism
 ```
 
 Quality gates:
@@ -44,7 +46,7 @@ npm test
 npm run build
 ```
 
-The CLI and dashboard output are calculated by the same domain, policy, routing, execution, verification, observation, adaptation, intelligence, persistence, and projection modules used by the tests. Fixtures never contain an authoritative selected route or delivery result. See [Domain engine](docs/domain-engine.md) for Phase 1 contracts, [Autonomous StarryRuntime](docs/starry-runtime.md) for Phase 2 lifecycle guarantees, [Communication Intelligence](docs/communication-intelligence.md) for Phase 3, [Operator Control Plane](docs/operator-control-plane.md) for Phase 4A, and [Operator Dashboard](docs/operator-dashboard.md) for Phase 4B.
+The CLI and dashboard output are calculated by the same domain, policy, routing, execution, verification, observation, adaptation, intelligence, persistence, and projection modules used by the tests. Fixtures never contain an authoritative selected route or delivery result. See [Domain engine](docs/domain-engine.md) for Phase 1 contracts, [Autonomous StarryRuntime](docs/starry-runtime.md) for Phase 2 lifecycle guarantees, [Communication Intelligence](docs/communication-intelligence.md) for Phase 3, [Operator Control Plane](docs/operator-control-plane.md) for Phase 4A, [Operator Dashboard](docs/operator-dashboard.md) for Phase 4B, and [Real-World Integration Architecture](docs/real-world-integration-architecture.md) for Phase 4C.
 
 ## The system in one loop
 
@@ -160,6 +162,7 @@ The six Phase 0 documents are the source of truth for implementation:
 - [Communication Intelligence](docs/communication-intelligence.md) — Phase 3 semantic model, evidence, explanations, recommendations, LLM boundary, fallback, and security guarantees.
 - [Operator Control Plane](docs/operator-control-plane.md) — Phase 4A commands, queries, persistence, replay, operator review, observability, and ACK authority.
 - [Operator Dashboard](docs/operator-dashboard.md) — Phase 4B application boundary, operator workflows, delivery semantics, simulation cases, UI tests, and Phase 4C boundary.
+- [Real-World Integration Architecture](docs/real-world-integration-architecture.md) — Phase 4C adapter contracts, normalization, ACK correlation, idempotency, restart/replay, credentials, privacy, and security.
 - [Hackathon alignment](docs/hackathon-alignment.md) — evidence for autonomous, adaptive, AI-native, domain-aware, safe operation and Codex's role.
 
 ## Roadmap
@@ -173,4 +176,4 @@ The six Phase 0 documents are the source of truth for implementation:
 - **Phase 6 — Mobile Field Interface:** implement the four essential Field Link actions and weak-network feedback.
 - **Phase 7 — Hardening:** address performance, accessibility, reduced motion, offline behavior, security, error states, and edge cases.
 
-The next implementation objective after Phase 4B review is **Phase 4C architecture/specification**. Phase 4C live transport/hardware integration, authentication, billing, CMS, production carrier infrastructure, real satellite or LoRa hardware, drone control, a vector database, and unconstrained agent frameworks remain deferred.
+The next implementation objective after Phase 4C review is **Phase 4D — controlled local transport adapter prototype**. Live telecom/provider integration, production authentication, billing, CMS, production carrier infrastructure, real satellite or LoRa field use, drone control, a vector database, and unconstrained agent frameworks remain deferred.

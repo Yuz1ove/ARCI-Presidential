@@ -537,3 +537,16 @@ The golden-path acceptance test should assert the event sequence and invariant o
 8. **Server-side provider and execution boundary.** The browser cannot access provider credentials or issue transport operations directly.
 
 These decisions form the acceptance boundary for Phase 1 and Phase 2 implementation. Changes that weaken them should require an architecture decision record and corresponding invariant tests.
+
+## 17. Phase 4C external transport boundary
+
+Phase 4C realizes the future transport seam as provider-neutral contracts without adding a live adapter. External devices and providers remain outside authority:
+
+```text
+External system → untrusted adapter → strict normalization → append-only evidence
+→ deterministic correlation → non-authoritative delivery candidate → sealed runtime verifier
+```
+
+The integration layer cannot import the runtime engine, executor, final policy, or control-plane service, and those authoritative modules do not depend on integration implementations. Availability, health, attempts, provider receipts, and destination ACKs are evidence only. A six-field ACK correlation binds mission, execution, route, attempt, correlation, and content identity; duplicate, stale, replayed, incomplete, mismatched, or conflicting evidence fails closed.
+
+See [Real-World Communication Integration Architecture](real-world-integration-architecture.md) for adapter contracts, capability unknowns, failure taxonomy, idempotency, restart/replay, credential handling, privacy controls, the deterministic simulator, and the Phase 4D–5 roadmap.

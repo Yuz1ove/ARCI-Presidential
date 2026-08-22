@@ -661,3 +661,9 @@ All external inputs remain command intent. They cannot contain runtime events, g
 Phase 4B adds eighteen application and rendering scenarios under `src/dashboard/`. They cover verified success, cellular-to-LoRa recovery, semantic ambiguity, prompt injection, approved and rejected mission updates, pending review, forged delivery and ACK fields, stale and wrong-execution ACKs, later valid ACK isolation, no available route, provider fallback, persistence failure, restart reconstruction, conflicting persistence, and unsupported cancellation.
 
 The dashboard scenarios submit the same Phase 4A commands and render the same Phase 4A projections used by the control-plane suite. UI selection and form state never become runtime state. Run summaries with `npm run dashboard:scenarios -- compare` and the eighteen-scenario, ten-replay gate with `npm run dashboard:scenarios -- determinism`.
+
+## 16. Phase 4C external-integration architecture outcomes
+
+Phase 4C adds twenty provider-neutral, zero-network scenarios under `src/integration/`: transport available/unavailable, transmission accepted/rejected, provider failure, timeout, provider receipt only, valid correlated ACK, stale/duplicate/wrong-execution/wrong-route/replayed ACK, delayed valid ACK, malformed evidence, adapter restart, duplicate callback after restart, callback reordering, credential isolation, and malicious external prose.
+
+All adapter output is normalized to untrusted evidence. Invalid or incomplete external evidence cannot produce a correlated ACK candidate, and no Phase 4C result can create authoritative delivery. Run summaries with `npm run integration:scenarios -- compare` and the twenty-scenario, ten-replay gate with `npm run integration:scenarios -- determinism`.
