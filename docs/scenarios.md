@@ -667,3 +667,9 @@ The dashboard scenarios submit the same Phase 4A commands and render the same Ph
 Phase 4C adds twenty provider-neutral, zero-network scenarios under `src/integration/`: transport available/unavailable, transmission accepted/rejected, provider failure, timeout, provider receipt only, valid correlated ACK, stale/duplicate/wrong-execution/wrong-route/replayed ACK, delayed valid ACK, malformed evidence, adapter restart, duplicate callback after restart, callback reordering, credential isolation, and malicious external prose.
 
 All adapter output is normalized to untrusted evidence. Invalid or incomplete external evidence cannot produce a correlated ACK candidate, and no Phase 4C result can create authoritative delivery. Run summaries with `npm run integration:scenarios -- compare` and the twenty-scenario, ten-replay gate with `npm run integration:scenarios -- determinism`.
+
+## 17. Phase 4D controlled local transport outcomes
+
+Phase 4D adds 33 deterministic scenarios under `src/integration/phase4d-scenarios.ts`. They cover local availability and failure outcomes; durable restart before send, after attempt, before callback, and after callback; duplicate/reordered callbacks; Ed25519 valid, invalid, wrong, unknown, altered, and replayed identity evidence; every mission/execution/route/attempt/correlation/message mismatch; non-authoritative correlated candidates; stale, duplicate, conflicting, and valid runtime ingestion; exact sealed verification ordering; key isolation; and malicious prose isolation.
+
+Only `ingestion-accepts-valid-candidate` and `authoritative-delivery-sealed-verification` reach authoritative delivery, and both do so through `verification.started → verification.ack_received → mission.delivered → runtime.completed`. Run summaries with `npm run local-transport:scenarios -- compare` and the 33-scenario, ten-replay gate with `npm run local-transport:scenarios -- determinism`.

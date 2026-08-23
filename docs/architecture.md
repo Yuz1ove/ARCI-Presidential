@@ -550,3 +550,17 @@ External system → untrusted adapter → strict normalization → append-only e
 The integration layer cannot import the runtime engine, executor, final policy, or control-plane service, and those authoritative modules do not depend on integration implementations. Availability, health, attempts, provider receipts, and destination ACKs are evidence only. A six-field ACK correlation binds mission, execution, route, attempt, correlation, and content identity; duplicate, stale, replayed, incomplete, mismatched, or conflicting evidence fails closed.
 
 See [Real-World Communication Integration Architecture](real-world-integration-architecture.md) for adapter contracts, capability unknowns, failure taxonomy, idempotency, restart/replay, credential handling, privacy controls, the deterministic simulator, and the Phase 4D–5 roadmap.
+
+## 18. Phase 4D controlled local transport boundary
+
+Phase 4D implements the Phase 4C seam locally without changing its authority direction:
+
+```text
+durable intent → local contract adapter → signed local evidence
+→ cryptographic authentication → append-only evidence → correlation
+→ non-authoritative candidate → sealed runtime ingestion → existing ACK verifier
+```
+
+The outbox, file persistence, adapter, signature verifier, and correlation layer cannot create delivery. The only new runtime surface is a strict ingestion command that rechecks authoritative runtime generation, mission, execution, route, attempt, correlation, content, ACK, evidence generation, route state, and policy freshness. It emits delivery only after the existing verification engine returns `VERIFIED`.
+
+See [Controlled Local Transport Prototype](controlled-local-transport.md) for the persistence formats, Ed25519 identity separation, replay identities, reconstruction lifecycle, scenario matrix, limitations, and explicit deferrals.

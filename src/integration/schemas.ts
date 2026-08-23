@@ -42,6 +42,9 @@ export const transportFailureCodeSchema = z.enum([
   "CORRELATION_FAILURE",
   "DUPLICATE_EVIDENCE",
   "UNSUPPORTED_TRANSPORT_OPERATION",
+  "SIGNATURE_INVALID",
+  "SIGNER_UNKNOWN",
+  "EVIDENCE_REPLAYED",
 ]);
 
 export const transportFailureSchema = z
@@ -238,6 +241,19 @@ export const inboundTransportObservationSchema = z
 
 export const transportEvidenceSchema = inboundTransportObservationSchema.extend({
   evidenceId: domainIdSchema,
+  authentication: z
+    .discriminatedUnion("status", [
+      z.object({ status: z.literal("NOT_CHECKED") }).strict(),
+      z
+        .object({
+          status: z.literal("AUTHENTICATED"),
+          keyId: domainIdSchema,
+          envelopeId: domainIdSchema,
+          algorithm: z.literal("Ed25519"),
+        })
+        .strict(),
+    ])
+    .optional(),
 }).strict();
 
 export const correlationDecisionSchema = z.enum([

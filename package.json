@@ -11,6 +11,7 @@
     "dashboard:scenarios": "tsx src/cli/dashboard.ts",
     "intelligence": "tsx src/cli/intelligence.ts",
     "integration:scenarios": "tsx src/cli/integration.ts",
+    "local-transport:scenarios": "tsx src/cli/local-transport.ts",
     "lint": "eslint .",
     "runtime": "tsx src/cli/runtime.ts",
     "scenario": "tsx src/cli/scenario.ts",

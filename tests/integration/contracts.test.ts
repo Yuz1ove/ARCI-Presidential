@@ -85,6 +85,9 @@ describe("Phase 4C contract validation", () => {
       "CORRELATION_FAILURE",
       "DUPLICATE_EVIDENCE",
       "UNSUPPORTED_TRANSPORT_OPERATION",
+      "SIGNATURE_INVALID",
+      "SIGNER_UNKNOWN",
+      "EVIDENCE_REPLAYED",
     ]);
   });
 });
