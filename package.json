@@ -13,6 +13,8 @@
     "integration:scenarios": "tsx src/cli/integration.ts",
     "local-transport:scenarios": "tsx src/cli/local-transport.ts",
     "provider-sandbox:scenarios": "tsx src/cli/provider-sandbox.ts",
+    "production-foundations:scenarios": "tsx src/cli/production-foundations.ts",
+    "audit:verify": "tsx src/cli/audit-verify.ts",
     "lint": "eslint .",
     "runtime": "tsx src/cli/runtime.ts",
     "scenario": "tsx src/cli/scenario.ts",

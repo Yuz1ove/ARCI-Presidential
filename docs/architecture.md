@@ -581,3 +581,27 @@ Provider implementation code depends on integration/domain contracts and never i
 Authentication, authorization, correlation, verification, and authority are separate gates. Provider acceptance, callback authentication, callback authorization, reconciliation, correlation, and candidate construction each preserve `authoritativeDelivery: false`. Only a `VERIFIED` result from the existing runtime path emits delivery.
 
 See [Authenticated Provider Sandbox](authenticated-provider-sandbox.md) for the exact service protocol, secret limitation, key lifecycle, authorization policy, replay identities, kill-switch semantics, durable reconciliation, restart recovery, redaction, SSRF controls, 54-scenario matrix, and deferred production work.
+
+## 20. Phase 4F production security and operations boundary
+
+Phase 4F adds security and operational constraints around the sealed provider path without changing authority direction:
+
+```text
+secret custody / service identity / authorization / admission / controls
+                              ↓
+                    provider execution evidence
+                              ↓
+transaction commit / audit chain / reconciliation
+                              ↓
+                    NON_AUTHORITATIVE evidence
+                              ↓
+             existing sealed runtime ingestion command
+                              ↓
+                  existing VerificationEngine
+                              ↓
+                           VERIFIED
+```
+
+Secret backends use opaque handles; only the deterministic in-memory test backend executes. TLS/mTLS is an explicit certificate and trust model, not an issued-certificate or socket claim. The transaction backend proves atomic visibility, CAS, uniqueness, idempotency, failure boundaries, and recovery classifications without claiming production database durability. Audit is bounded, canonical, hash-chained, exportable, and strictly observational. Admission uses a logical clock, and safety controls have explicit stop precedence.
+
+Foundation modules cannot import provider, runtime, verification, or control-plane mutation surfaces. Valid security evidence, persisted state, audit verification, rate admission, and administrator authorization remain insufficient for delivery. See [Production Security & Operational Foundations](production-security-foundations.md) for contracts, limitations, scenarios, and deferred integration.

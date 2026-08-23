@@ -39,3 +39,4 @@ export * from "./dashboard/index.js";
 export * from "./integration/index.js";
 export * from "./runtime/transport-ingestion.js";
 export * from "./provider/index.js";
+export * from "./foundations/index.js";
