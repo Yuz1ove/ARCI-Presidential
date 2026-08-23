@@ -8,11 +8,11 @@ StarryLink is an AI-native communication system for disasters, weak networks, ou
 
 Its intelligence is not a chatbot and does not merely recommend a radio. **Starry Intelligence decides and coordinates communication under uncertainty.**
 
-## Phase 4F status
+## Phase 4G status
 
-Phase 4E is sealed at `phase-4e-authenticated-provider-sandbox-ready`. The working tree now contains **Phase 4F — Production Security & Operational Foundations**: opaque secret-custody contracts and lifecycle, a deterministic TLS/mTLS service-identity model, atomic transactional semantics with crash injection, canonical hash-chained JSONL audit export, logical-clock admission control, operational safety precedence, typed configuration integrity, distinct administrative identities, and 79 deterministic scenarios.
+Phase 4F is sealed at `phase-4f-production-security-foundations-ready`. The working tree now contains **Phase 4G — Staging Infrastructure Threat Model & Adapter Selection**: disconnected staging adapter contracts, closed capability negotiation, credential-free typed configuration, explicit recovery/failover semantics, a test-only checkpoint lifecycle, separated infrastructure administrators, a formal threat model, and 101 deterministic scenarios.
 
-The deterministic runtime remains authoritative for routing, hard policy, final validation, execution capabilities, ACK verification, autonomy bounds, and terminal state. Valid keys, TLS identities, transaction commits, audit chains, admission decisions, administrator authorization, provider acceptance, and callback evidence remain non-authoritative. Only the sealed Phase 4D ingestion command can invoke the existing verifier and establish delivery. Phase 4F is a local architectural proof: it has no real KMS/HSM/Vault/keychain connection, issued certificate, production database, cloud audit shipping, public listener, production credential, or provider account.
+The deterministic runtime remains authoritative for routing, hard policy, final validation, execution capabilities, ACK verification, autonomy bounds, and terminal state. Infrastructure health, keys, TLS identities, transaction commits, checkpoints, admission, administration, provider acceptance, and callback evidence remain non-authoritative. Only the sealed Phase 4D ingestion command can invoke the existing verifier and establish delivery. Phase 4G has no real Vault/KMS/HSM/keychain connection, certificate, database, object store, distributed quota service, public listener, credential, account, or provider contact.
 
 ## Run the domain simulation
 
@@ -41,6 +41,8 @@ npm run provider-sandbox:scenarios -- compare
 npm run provider-sandbox:scenarios -- determinism
 npm run production-foundations:scenarios -- compare
 npm run production-foundations:scenarios -- determinism
+npm run staging-infrastructure:scenarios -- compare
+npm run staging-infrastructure:scenarios -- determinism
 npm run audit:verify -- self-test
 ```
 
@@ -53,7 +55,7 @@ npm test
 npm run build
 ```
 
-The CLI and dashboard output are calculated by the same domain, policy, routing, execution, verification, observation, adaptation, intelligence, persistence, and projection modules used by the tests. Fixtures never contain an authoritative selected route or delivery result. See [Domain engine](docs/domain-engine.md) for Phase 1 contracts, [Autonomous StarryRuntime](docs/starry-runtime.md) for Phase 2 lifecycle guarantees, [Communication Intelligence](docs/communication-intelligence.md) for Phase 3, [Operator Control Plane](docs/operator-control-plane.md) for Phase 4A, [Operator Dashboard](docs/operator-dashboard.md) for Phase 4B, [Real-World Integration Architecture](docs/real-world-integration-architecture.md) for Phase 4C, [Controlled Local Transport](docs/controlled-local-transport.md) for Phase 4D, [Authenticated Provider Sandbox](docs/authenticated-provider-sandbox.md) for Phase 4E, and [Production Security & Operational Foundations](docs/production-security-foundations.md) for Phase 4F.
+The CLI and dashboard output are calculated by the same modules used by the tests. Fixtures never contain an authoritative selected route or delivery result. See [Domain engine](docs/domain-engine.md), [Autonomous StarryRuntime](docs/starry-runtime.md), [Communication Intelligence](docs/communication-intelligence.md), [Operator Control Plane](docs/operator-control-plane.md), [Operator Dashboard](docs/operator-dashboard.md), [Real-World Integration Architecture](docs/real-world-integration-architecture.md), [Controlled Local Transport](docs/controlled-local-transport.md), [Authenticated Provider Sandbox](docs/authenticated-provider-sandbox.md), [Production Security & Operational Foundations](docs/production-security-foundations.md), and [Staging Infrastructure Threat Model & Adapter Selection](docs/staging-infrastructure-architecture.md).
 
 ## The system in one loop
 
@@ -173,6 +175,7 @@ The six Phase 0 documents are the source of truth for implementation:
 - [Controlled Local Transport](docs/controlled-local-transport.md) — Phase 4D durable outbox/evidence, local adapter, Ed25519 identity, replay protection, and runtime ingestion authority.
 - [Authenticated Provider Sandbox](docs/authenticated-provider-sandbox.md) — Phase 4E loopback boundary, service authentication/authorization, ephemeral secrets, key lifecycle, kill switch, reconciliation, restart, and authority proof.
 - [Production Security & Operational Foundations](docs/production-security-foundations.md) — Phase 4F secret custody, TLS/mTLS identity model, transaction semantics, audit export, admission control, operational controls, configuration integrity, and authority proof.
+- [Staging Infrastructure Threat Model & Adapter Selection](docs/staging-infrastructure-architecture.md) — Phase 4G threat model, adapter ADRs, capabilities, configuration, recovery, failover, checkpoint, and authority proof.
 - [Hackathon alignment](docs/hackathon-alignment.md) — evidence for autonomous, adaptive, AI-native, domain-aware, safe operation and Codex's role.
 
 ## Roadmap
@@ -186,4 +189,4 @@ The six Phase 0 documents are the source of truth for implementation:
 - **Phase 6 — Mobile Field Interface:** implement the four essential Field Link actions and weak-network feedback.
 - **Phase 7 — Hardening:** address performance, accessibility, reduced motion, offline behavior, security, error states, and edge cases.
 
-The next bounded objective after Phase 4F review is **Phase 4G — select and threat-model concrete infrastructure adapters in a credential-free staging design before any integration is authorized**. Live telecom production integration, billing, CMS, carrier infrastructure, real satellite or LoRa field use, drone control, production credentials, public ingress, a vector database, and unconstrained agent frameworks remain deferred.
+The next bounded objective after Phase 4G review is **Phase 4H — implement and accept adapters one at a time against isolated disposable local infrastructure, still without production credentials or public deployment**. Live telecom production integration, billing, CMS, carrier infrastructure, real satellite or LoRa field use, drone control, production credentials, public ingress, a vector database, and unconstrained agent frameworks remain deferred.

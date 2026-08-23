@@ -605,3 +605,11 @@ transaction commit / audit chain / reconciliation
 Secret backends use opaque handles; only the deterministic in-memory test backend executes. TLS/mTLS is an explicit certificate and trust model, not an issued-certificate or socket claim. The transaction backend proves atomic visibility, CAS, uniqueness, idempotency, failure boundaries, and recovery classifications without claiming production database durability. Audit is bounded, canonical, hash-chained, exportable, and strictly observational. Admission uses a logical clock, and safety controls have explicit stop precedence.
 
 Foundation modules cannot import provider, runtime, verification, or control-plane mutation surfaces. Valid security evidence, persisted state, audit verification, rate admission, and administrator authorization remain insufficient for delivery. See [Production Security & Operational Foundations](production-security-foundations.md) for contracts, limitations, scenarios, and deferred integration.
+
+## 21. Phase 4G staging infrastructure boundary
+
+Phase 4G selects disconnected Vault-class custody, SPIFFE/SPIRE-class identity, PostgreSQL-class transactional persistence, immutable object storage plus protected checkpoints, and PostgreSQL-class serializable admission. OS keychain, Vault PKI, and Redis-class adapters remain explicit alternatives, never silent failovers.
+
+The `src/infrastructure/` layer declares closed capabilities, backend/evidence identities, health, generations, idempotency, retry/timeout classification, recovery, and observability. Every adapter defaults to `UNAVAILABLE`; configuration permits only `CONTRACT_ONLY` activation and rejects credentials, unknown adapters/capabilities, bad cross-references, stale trust, rollback, same-generation conflict, weak durability/consistency, invalid retry, and implicit fallback.
+
+Infrastructure modules cannot import provider, runtime, verification, or control-plane completion surfaces. Administration and health remain non-authoritative. The 101-scenario matrix preserves all nine direct non-authority implications and reaches delivery once through `verification.started → verification.ack_received → mission.delivered → runtime.completed`. See [Staging Infrastructure Threat Model & Adapter Selection](staging-infrastructure-architecture.md).

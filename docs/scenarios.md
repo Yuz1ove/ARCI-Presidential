@@ -687,3 +687,9 @@ Phase 4F adds 79 canonical scenarios under `src/simulation/foundations/`. The fi
 All key, identity, transaction, audit, admission, control, configuration, administrator, provider, and callback results remain non-authoritative. Only `only-verification-engine-may-establish-delivery` reaches delivery, and it does so by delegating to the sealed provider-to-ingestion composition and preserving `verification.started → verification.ack_received → mission.delivered → runtime.completed`.
 
 Run the matrix with `npm run production-foundations:scenarios -- compare` and the 79-scenario, ten-replay gate with `npm run production-foundations:scenarios -- determinism`. Verify a canonical JSONL audit export with `npm run audit:verify -- /absolute/path/to/export.jsonl`.
+
+## 20. Phase 4G staging infrastructure outcomes
+
+Phase 4G adds 101 canonical scenarios under `src/simulation/infrastructure/`. They cover disconnected selection and observational health; closed capability negotiation; credential, adapter, capability, cross-reference, durability, consistency, retry, fallback, generation, rollback, conflict, and actor rejection; all 21 infrastructure failure/recovery classes; checkpoint tampering and rotation; permitted/forbidden failover; role separation; and every authority implication.
+
+Exactly one scenario reaches delivery, through the sealed four-event verification chain. Run `npm run staging-infrastructure:scenarios -- compare` and the 101 × 10 gate with `npm run staging-infrastructure:scenarios -- determinism`.
