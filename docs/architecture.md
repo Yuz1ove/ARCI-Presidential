@@ -564,3 +564,20 @@ durable intent → local contract adapter → signed local evidence
 The outbox, file persistence, adapter, signature verifier, and correlation layer cannot create delivery. The only new runtime surface is a strict ingestion command that rechecks authoritative runtime generation, mission, execution, route, attempt, correlation, content, ACK, evidence generation, route state, and policy freshness. It emits delivery only after the existing verification engine returns `VERIFIED`.
 
 See [Controlled Local Transport Prototype](controlled-local-transport.md) for the persistence formats, Ed25519 identity separation, replay identities, reconstruction lifecycle, scenario matrix, limitations, and explicit deferrals.
+
+## 19. Phase 4E authenticated provider sandbox boundary
+
+Phase 4E crosses one real local service boundary without changing authority direction:
+
+```text
+Phase 4D outbox → kill switch → signed transport.send → loopback-only HTTP sandbox
+→ authenticated + authorized provider acceptance → signed callback
+→ authenticated + authorized evidence → durable evidence → deterministic reconciliation
+→ non-authoritative candidate → Phase 4D sealed ingestion → existing VerificationEngine
+```
+
+Provider implementation code depends on integration/domain contracts and never imports runtime internals. Network configuration accepts only validated loopback endpoints, pins verified `localhost` resolution, rejects redirects, and bounds request, response, callback, timeout, and retries. ARCI and provider identities have separate opaque ephemeral signing handles and deterministic public-key rings with bounded rotation overlap and revocation.
+
+Authentication, authorization, correlation, verification, and authority are separate gates. Provider acceptance, callback authentication, callback authorization, reconciliation, correlation, and candidate construction each preserve `authoritativeDelivery: false`. Only a `VERIFIED` result from the existing runtime path emits delivery.
+
+See [Authenticated Provider Sandbox](authenticated-provider-sandbox.md) for the exact service protocol, secret limitation, key lifecycle, authorization policy, replay identities, kill-switch semantics, durable reconciliation, restart recovery, redaction, SSRF controls, 54-scenario matrix, and deferred production work.
