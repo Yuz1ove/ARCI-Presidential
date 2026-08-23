@@ -1,7 +1,8 @@
-import { closeSync, existsSync, mkdirSync, openSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
+import { closeSync, existsSync, mkdirSync, openSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { z } from "zod";
 import { domainIdSchema } from "../domain/ids.js";
+import { PERSISTENCE_MAX_RECORDS, readBoundedUtf8FileSync } from "../foundations/bounded-json-file.js";
 import { providerCallbackBodySchema, providerResponseSchema, providerSendBodySchema, type ProviderResponse, type ProviderSendBody } from "./schemas.js";
 
 const sandboxRequestRecordSchema = z.object({
@@ -20,8 +21,8 @@ const sandboxCallbackRecordSchema = z.object({
 
 const sandboxLedgerSchema = z.object({
   schemaVersion: z.literal("4E.1"),
-  requests: z.array(sandboxRequestRecordSchema),
-  callbacks: z.array(sandboxCallbackRecordSchema),
+  requests: z.array(sandboxRequestRecordSchema).max(PERSISTENCE_MAX_RECORDS),
+  callbacks: z.array(sandboxCallbackRecordSchema).max(PERSISTENCE_MAX_RECORDS),
   pollCount: z.number().int().nonnegative(),
 }).strict();
 
@@ -51,7 +52,7 @@ export class FileProviderSandboxLedger {
   private read() {
     if (!existsSync(this.filePath)) return emptyLedger();
     try {
-      return sandboxLedgerSchema.parse(JSON.parse(readFileSync(this.filePath, "utf8")));
+      return sandboxLedgerSchema.parse(JSON.parse(readBoundedUtf8FileSync(this.filePath)));
     } catch {
       throw new ProviderPersistenceError("PROVIDER_LEDGER_MALFORMED");
     }
@@ -147,8 +148,8 @@ const boundaryCallbackSchema = z.object({
 
 const boundaryDocumentSchema = z.object({
   schemaVersion: z.literal("4E.1"),
-  requests: z.array(boundaryRequestSchema),
-  callbacks: z.array(boundaryCallbackSchema),
+  requests: z.array(boundaryRequestSchema).max(PERSISTENCE_MAX_RECORDS),
+  callbacks: z.array(boundaryCallbackSchema).max(PERSISTENCE_MAX_RECORDS),
 }).strict();
 
 export type ProviderBoundaryRequestRecord = z.infer<typeof boundaryRequestSchema>;
@@ -167,7 +168,7 @@ export class FileProviderBoundaryRepository {
   private read() {
     if (!existsSync(this.filePath)) return boundaryDocumentSchema.parse({ schemaVersion: "4E.1", requests: [], callbacks: [] });
     try {
-      return boundaryDocumentSchema.parse(JSON.parse(readFileSync(this.filePath, "utf8")));
+      return boundaryDocumentSchema.parse(JSON.parse(readBoundedUtf8FileSync(this.filePath)));
     } catch {
       throw new ProviderPersistenceError("PROVIDER_LEDGER_MALFORMED");
     }

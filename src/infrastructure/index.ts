@@ -5,3 +5,4 @@ export * from "./configuration.js";
 export * from "./contracts.js";
 export * from "./failure-recovery.js";
 export * from "./model.js";
+export * from "./postgres/index.js";

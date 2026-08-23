@@ -14,12 +14,14 @@
     "local-transport:scenarios": "tsx src/cli/local-transport.ts",
     "provider-sandbox:scenarios": "tsx src/cli/provider-sandbox.ts",
     "production-foundations:scenarios": "tsx src/cli/production-foundations.ts",
+    "postgres:acceptance": "vitest run tests/infrastructure/postgres tests/infrastructure/postgres-authority-architecture.test.ts tests/infrastructure/persistence-file-bounds.test.ts",
+    "postgres:acceptance:repeat": "vitest run tests/infrastructure/postgres/repeat.test.ts",
     "staging-infrastructure:scenarios": "tsx src/cli/staging-infrastructure.ts",
     "audit:verify": "tsx src/cli/audit-verify.ts",
     "lint": "eslint .",
     "runtime": "tsx src/cli/runtime.ts",
     "scenario": "tsx src/cli/scenario.ts",
-    "test": "vitest run",
+    "test": "vitest run --maxWorkers=50%",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
@@ -30,9 +32,12 @@
   "devDependencies": {
     "@eslint/js": "^9.34.0",
     "@types/node": "^24.3.0",
+    "@types/pg": "8.20.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
+    "embedded-postgres": "18.4.0-beta.17",
     "eslint": "^9.34.0",
+    "pg": "8.23.0",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.42.0",

@@ -1,192 +1,161 @@
-# StarryLink Next
+# Autonomous Resilient Communication Intelligence
 
-> Autonomous Resilient Communication Intelligence
+ARCI is a deterministic communication-orchestration core for disasters, outages, weak networks, and rapidly changing connectivity. It observes operational state, selects a policy-compliant route, executes through bounded adapters, verifies acknowledgement evidence, and replans when delivery is not established.
 
-**Networks fail. Communication shouldn't.**
+The repository originated as **StarryLink Next**. Its central design rule remains simple: execution, provider acceptance, database persistence, and operator authorization are evidence—not proof of delivery. Only the verification boundary may establish delivery.
 
-StarryLink is an AI-native communication system for disasters, weak networks, outages, and rapidly changing connectivity. It observes network, device, and mission conditions; chooses how a message should travel; executes that plan; verifies delivery; and replans when reality changes.
+## Why ARCI Exists
 
-Its intelligence is not a chatbot and does not merely recommend a radio. **Starry Intelligence decides and coordinates communication under uncertainty.**
+Emergency communication systems must continue making safe, explainable decisions when networks degrade and external services return incomplete or contradictory evidence. ARCI separates deterministic authority from probabilistic interpretation and infrastructure observations, making failure and uncertainty explicit rather than turning them into optimistic success.
 
-## Phase 4G status
+## Core Capabilities
 
-Phase 4F is sealed at `phase-4f-production-security-foundations-ready`. The working tree now contains **Phase 4G — Staging Infrastructure Threat Model & Adapter Selection**: disconnected staging adapter contracts, closed capability negotiation, credential-free typed configuration, explicit recovery/failover semantics, a test-only checkpoint lifecycle, separated infrastructure administrators, a formal threat model, and 101 deterministic scenarios.
+- Deterministic routing, policy enforcement, execution, verification, and bounded adaptation.
+- Structured mission and incident interpretation with a constrained LLM boundary and deterministic fallback.
+- Operator commands, review workflows, replayable projections, and a tested dashboard client boundary.
+- Durable local outbox and evidence repositories with bounded reads and schema validation.
+- Authenticated loopback provider and controlled local transport simulations.
+- Production-security contracts for secret custody, service identity, audit integrity, admission control, configuration, and administration.
+- A real, disposable PostgreSQL 18.4 transactional adapter with serializable CAS, idempotency, ambiguous-commit handling, durable reconciliation, restart testing, and least-privilege roles.
 
-The deterministic runtime remains authoritative for routing, hard policy, final validation, execution capabilities, ACK verification, autonomy bounds, and terminal state. Infrastructure health, keys, TLS identities, transaction commits, checkpoints, admission, administration, provider acceptance, and callback evidence remain non-authoritative. Only the sealed Phase 4D ingestion command can invoke the existing verifier and establish delivery. Phase 4G has no real Vault/KMS/HSM/keychain connection, certificate, database, object store, distributed quota service, public listener, credential, account, or provider contact.
+Implemented capabilities are exercised locally and in simulation. ARCI has no production deployment, live carrier integration, real satellite or LoRa field validation, public ingress, production credentials, or compliance certification.
 
-## Run the domain simulation
+## Architecture
 
-```bash
-npm install
-npm run scenario -- normal
-npm run scenario -- cellular-failure
-npm run scenario -- compare
-npm run runtime -- sequential-degradation
-npm run runtime -- compare
-npm run runtime -- determinism
-npm run intelligence -- natural-language-medical-emergency
-npm run intelligence -- compare
-npm run intelligence -- determinism
-npm run control-plane -- create-medical-mission
-npm run control-plane -- compare
-npm run control-plane -- determinism
-npm run dashboard
-npm run dashboard:scenarios -- compare
-npm run dashboard:scenarios -- determinism
-npm run integration:scenarios -- compare
-npm run integration:scenarios -- determinism
-npm run local-transport:scenarios -- compare
-npm run local-transport:scenarios -- determinism
-npm run provider-sandbox:scenarios -- compare
-npm run provider-sandbox:scenarios -- determinism
-npm run production-foundations:scenarios -- compare
-npm run production-foundations:scenarios -- determinism
-npm run staging-infrastructure:scenarios -- compare
-npm run staging-infrastructure:scenarios -- determinism
-npm run audit:verify -- self-test
+```mermaid
+flowchart TD
+    A[Independent application layer] --> B[Validated control-plane commands and queries]
+    B --> C[Incident and mission intelligence]
+    C --> D[Deterministic routing and policy]
+    D --> E[Bounded runtime and execution]
+    E --> F[Transport adapters]
+    F --> G[Untrusted receipts and observations]
+    G --> H[Correlation and verification]
+    H -->|verified ACK only| I[Authoritative delivery state]
+    E --> J[Persistence boundary]
+    J --> K[PostgreSQL transactional adapter]
+    K --> L[Durable reconciliation evidence]
+    L --> H
 ```
 
-Quality gates:
+The deterministic runtime owns route selection, hard constraints, execution bounds, ACK verification, adaptation, and terminal state. Language models, transports, providers, infrastructure health, PostgreSQL rows, reconciliation, and administrators are non-authoritative. See [Architecture](docs/architecture.md) for the complete model.
+
+## Resilience Model
+
+ARCI uses an observe–understand–plan–act–verify–adapt loop. Every significant route change must follow from observed state and policy evaluation. Failed or uncertain persistence is represented explicitly:
+
+```text
+COMMITTED
+NOT_COMMITTED
+UNKNOWN_REQUIRES_RECONCILIATION
+```
+
+For PostgreSQL, errors after `COMMIT` dispatch are conservative: an outcome that cannot be proven is reconciled by immutable transaction, operation, idempotency, owner, request fingerprint, adapter generation, and logical-sequence evidence. A database commit never establishes message delivery.
+
+## Repository Structure
+
+```text
+src/
+├── domain/          identifiers and core domain values
+├── policy/          deterministic hard constraints
+├── routing/         discovery, scoring, and route decisions
+├── runtime/         bounded orchestration and state transitions
+├── verification/    sole delivery-authority boundary
+├── intelligence/    structured interpretation and explanation
+├── control-plane/   validated commands, queries, and projections
+├── dashboard/       application-facing dashboard adapter and UI
+├── integration/     transport contracts, correlation, outbox, evidence
+├── provider/        authenticated provider sandbox boundary
+├── foundations/     audit, identity, admission, configuration, transactions
+├── infrastructure/  adapter contracts and PostgreSQL implementation
+├── simulation/      deterministic scenario fixtures
+└── cli/             reproducible scenario and audit entry points
+tests/               unit, architecture, security, scenario, and acceptance tests
+docs/                architecture, phase evidence, status, and integration guidance
+```
+
+## Quick Start
+
+Requirements: Node.js 20 or newer and npm. The PostgreSQL acceptance suite uses repository-scoped `embedded-postgres`; it creates a random loopback-only cluster under ignored `/.arci-postgres/` and generates per-run credentials in memory.
+
+```bash
+npm ci
+npm run scenario -- compare
+npm run runtime -- determinism
+npm test
+```
+
+Run the dashboard locally with `npm run dashboard`. It is a tested project surface, not evidence of a deployed service.
+
+## Configuration
+
+The default repository workflows need no secrets. Local `.env` files are ignored, and no production connection string is required or supported by the Phase 4H acceptance harness. Infrastructure contracts accept closed, typed configuration; the PostgreSQL adapter is restricted to `CONTRACT_ONLY` activation.
+
+Do not commit credentials, connection strings, tokens, private keys, local database clusters, logs, coverage, or build output. A future host application must inject secret references through its own server-side boundary and keep raw credentials outside client-visible state and durable evidence.
+
+## Running Tests
+
+Core engineering gates:
 
 ```bash
 npm run lint
 npm run typecheck
 npm test
 npm run build
+npm audit --audit-level=low
 ```
 
-The CLI and dashboard output are calculated by the same modules used by the tests. Fixtures never contain an authoritative selected route or delivery result. See [Domain engine](docs/domain-engine.md), [Autonomous StarryRuntime](docs/starry-runtime.md), [Communication Intelligence](docs/communication-intelligence.md), [Operator Control Plane](docs/operator-control-plane.md), [Operator Dashboard](docs/operator-dashboard.md), [Real-World Integration Architecture](docs/real-world-integration-architecture.md), [Controlled Local Transport](docs/controlled-local-transport.md), [Authenticated Provider Sandbox](docs/authenticated-provider-sandbox.md), [Production Security & Operational Foundations](docs/production-security-foundations.md), and [Staging Infrastructure Threat Model & Adapter Selection](docs/staging-infrastructure-architecture.md).
+Focused PostgreSQL and determinism gates:
 
-## The system in one loop
-
-```text
-Environment + Device + Mission + Historical outcomes
-                         │
-                         ▼
-Observe → Understand → Plan → Act → Verify → Adapt
-  ▲                                               │
-  └───────────────────────────────────────────────┘
+```bash
+npm run postgres:acceptance
+npm run postgres:acceptance:repeat
+npm run provider-sandbox:scenarios -- determinism
+npm run production-foundations:scenarios -- determinism
+npm run staging-infrastructure:scenarios -- determinism
+npm run audit:verify -- self-test
 ```
 
-Every important route change must come from this loop. A scenario changes environment state; the runtime observes the change, evaluates constraints, selects and executes a route, verifies the result, updates operational memory, and replans if verification fails.
+`npm run postgres:acceptance` runs the disposable server, migration, privilege, transaction, reconciliation, restart, concurrency, error-safety, and authority-separation checks. The complete suite uses at most 50% of Vitest workers to prevent unrelated real-server scenario tests from manufacturing wall-clock timeout failures.
 
-The decision stack is deliberately hybrid:
+## Security and Reliability
 
-```text
-Deterministic safety rules
-          ↓
-Constraint engine
-          ↓
-Prediction and scoring
-          ↓
-LLM / agent reasoning
-          ↓
-Policy validation
-          ↓
-Execution → Verification
-```
+The repository applies exact boundary projection, schema validation, bounded canonicalization and file reads, parameterized SQL, checksummed forward migrations, least-privilege local database roles, credential-safe error normalization, owned pool cleanup, explicit reconciliation, idempotency fences, and architecture tests that preserve verification authority.
 
-An LLM may interpret a mission or explain a decision. It may not bypass hard constraints or directly control all routing. Invalid structured output falls back to deterministic policy.
+Security claims are limited to reproducible repository evidence. See [Security policy](SECURITY.md), [Production security foundations](docs/production-security-foundations.md), [Staging infrastructure threat model](docs/staging-infrastructure-architecture.md), and [PostgreSQL adapter acceptance](docs/postgresql-adapter-acceptance.md).
 
-Phase 3 implements the constrained semantic and explanation boundary. It does not move routing, policy, execution, verification, or adaptation authority into a language model.
+## Current Project Status
 
-## Product surfaces
+Phase 4H implements the first real disposable infrastructure adapter—PostgreSQL transactional persistence—and is closed as a locally reproducible, non-security-certified engineering checkpoint. All locally executable engineering gates passed. Codex Security Deep Scan did not execute because the current host lacks its required managed read-only filesystem permission profile, so no Deep Scan verdict or canonical artifacts exist. Phase 4H must not be described as security-ready, security-certified, Deep-Scan-passed, or production-ready.
 
-- **Starry Intelligence** — the persistent communication agent.
-- **Starry Core** — the ambient, non-chat visual presence of that intelligence.
-- **Command Space** — the desktop-first operational workspace for topology, mission context, route state, decisions, and manual override.
-- **Field Link** — the mobile-first emergency interface with direct actions such as `Need Help`, `Medical`, `Can't Call`, and `I'm Safe`. People in the field never have to choose between 5G, Wi-Fi, LoRa, relay, or satellite.
+See [Project status](docs/PROJECT-STATUS.md) for the current functional and external-security verification state.
 
-## Golden demo
+## Known Limitations
 
-The 60–90 second golden path is the product proof, not a scripted animation:
+- PostgreSQL evidence is local disposable acceptance, not managed production validation.
+- Backup/restore, replication, failover, TLS/mTLS, workload identity, credential rotation, capacity, and long-duration load are not yet proven.
+- Transport and provider integrations are loopback or simulated; there is no live telecom, satellite, LoRa, drone, or public network integration.
+- The language-model boundary is constrained and optional; deterministic policy remains authoritative.
+- The included dashboard is a project/test surface, not a finished domain-specific frontend product.
+- No external deployment, users, partnerships, certifications, or field trials are claimed.
 
-| Time | Environment and mission | Observable system behavior |
-| --- | --- | --- |
-| 0–10 s | Normal connectivity | 5G is the verified primary route. |
-| 10–20 s | Operator starts **Cellular Failure** | The simulator changes cellular signal and packet-loss state. |
-| 20–35 s | Cellular quality degrades | Observer detects degradation; Starry Intelligence evaluates alternatives. |
-| 35–45 s | A stronger fallback exists | The runtime autonomously switches `5G → LoRa Relay`. |
-| 45–55 s | Transmission completes | Verification receives an ACK and records the outcome. |
-| 55–65 s | **Medical Emergency** begins | Reliability and urgency take precedence over cost. |
-| 65–80 s | LoRa delivery fails | Verification triggers replanning: `LoRa → Drone Relay → Satellite`. |
-| 80–90 s | A route succeeds | Command Space shows `MISSION DELIVERED`, `Autonomous recovery 2`, and `Human intervention 0`. |
+## Application Layer Strategy
 
-The Intelligence Timeline must expose the evidence: observation, threshold change, alternatives considered, route selected, execution, retries, ACK, and final delivery. Both **Live AI Mode** and clearly labelled **Simulated AI Mode** use the same state engine and execution path.
+ARCI Core should remain domain-agnostic. Future applications—such as Agricultural Resilience Command, disaster response, medical response, or field-responder tools—should live in separate products and integrate through versioned commands, queries, projections, events, and transport ports. They may map domain language onto ARCI concepts but must not bypass policy, verification, reconciliation, or authority boundaries.
 
-## Principles
-
-1. **AI is the control loop, not an add-on.** Removing it removes adaptive routing orchestration.
-2. **Mission outranks medium.** The system optimizes for the message's urgency, reliability, latency, payload, and energy constraints—not for a favorite network.
-3. **Safety is deterministic where it must be.** Emergency priority, battery floors, privacy, retry limits, route policy, and offline fallback remain enforceable outside LLM reasoning.
-4. **Execution is not success.** A route is trusted only after ACK, delivery, latency, and retry evidence are verified.
-5. **Failure is a first-class state.** Confidence, uncertainty, degraded mode, fallback policy, fail-safe behavior, and manual override are visible and testable.
-6. **Adaptation must be causal.** Scenarios modify domain state; they never directly swap UI labels or play a predetermined result.
-7. **Memory is operational.** Historical route performance, channel and node reliability, failures, fallbacks, and retries inform later decisions. Chat history is not the memory model.
-8. **Humans retain authority.** Autonomous mode can act without continuous supervision, while manual override remains available.
-9. **The interface reveals intelligence.** A restrained, calm, spatial operating environment makes the loop legible without exposing private chain-of-thought.
-10. **Reliability includes demo conditions.** Offline-capable simulation, bounded loops, cancellation, timeouts, rate limits, retry limits, and deterministic fallbacks are product requirements.
-
-## Proposed monorepo structure
-
-This is the intended separation of concerns for later phases. It is documented now and should only be generated as each phase requires it.
-
-```text
-starrylink-next/
-├── apps/
-│   ├── web/
-│   │   └── src/
-│   │       ├── components/     # shared presentation components
-│   │       ├── features/       # Landing, Command Space, Field Link
-│   │       └── lib/            # web-only utilities and adapters
-│   └── api/                    # HTTP/SSE boundary and runtime host
-├── packages/
-│   ├── domain/                 # pure states, graph, decisions, results, events
-│   ├── policy/                 # versioned hard rules and constraints
-│   ├── routing/                # candidate enumeration, estimates, scoring
-│   ├── runtime/                # bounded StarryRuntime orchestration
-│   ├── providers/              # server-only AIProvider adapters
-│   ├── transports/             # simulated and future live transports
-│   ├── simulation/             # scenarios and deterministic fixtures
-│   ├── persistence/            # event, outbox, and memory repositories
-│   ├── observability/          # safe logs, metrics, and trace ports
-│   ├── contracts/              # schema-validated client projections
-│   └── testkit/                # builders, fakes, virtual time, replay
-├── tests/                      # cross-package scenarios and browser flows
-└── docs/                       # product and engineering decisions
-```
-
-Business logic belongs in domain, policy, routing, and runtime packages, not JSX. Scenario definitions stay separate from UI controls. Provider and transport code stay behind server-side interfaces. Tests should cover decisions, state transitions, schemas, full scenarios, UI behavior, mobile layouts, and real browser flows.
+See [Application integration](docs/APPLICATION-INTEGRATION.md) for the supported separation and versioning expectations.
 
 ## Documentation
 
-The six Phase 0 documents are the source of truth for implementation:
+- [Architecture](docs/architecture.md) — authoritative system boundaries, flows, security model, and test strategy.
+- [Application integration](docs/APPLICATION-INTEGRATION.md) — how independent domain applications connect without coupling the core.
+- [Project status](docs/PROJECT-STATUS.md) — sealed baseline, Phase 4H verification state, and next action.
+- [PostgreSQL adapter acceptance](docs/postgresql-adapter-acceptance.md) — Phase 4H implementation and limitations.
+- [Scenarios](docs/scenarios.md) — deterministic scenario coverage.
+- [StarryRuntime](docs/starry-runtime.md) — orchestration lifecycle and recovery.
+- [Communication intelligence](docs/communication-intelligence.md) — semantic and LLM boundaries.
+- [Real-world integration architecture](docs/real-world-integration-architecture.md) — provider-neutral adapter contracts.
+- [Controlled local transport](docs/controlled-local-transport.md) — durable evidence and ACK ingestion.
+- [Authenticated provider sandbox](docs/authenticated-provider-sandbox.md) — authentication, authorization, replay, and restart.
 
-- [Product vision](docs/vision.md) — thesis, users, boundaries, system loop, outcomes, and demo narrative.
-- [Architecture](docs/architecture.md) — runtime boundaries, data flow, packages, deployment shape, security, and engineering constraints.
-- [Agent system](docs/agent-system.md) — logical agents, hybrid decision pipeline, memory, verification, recovery, and provider contracts.
-- [Design system](docs/design-system.md) — visual language, tokens, typography, surfaces, motion, responsiveness, and accessibility.
-- [Scenarios](docs/scenarios.md) — simulation model, five core scenarios, transitions, fixtures, and acceptance checks.
-- [Autonomous StarryRuntime](docs/starry-runtime.md) — Phase 2 lifecycle, bounds, observation normalization, adaptation, events, idempotency, and termination.
-- [Communication Intelligence](docs/communication-intelligence.md) — Phase 3 semantic model, evidence, explanations, recommendations, LLM boundary, fallback, and security guarantees.
-- [Operator Control Plane](docs/operator-control-plane.md) — Phase 4A commands, queries, persistence, replay, operator review, observability, and ACK authority.
-- [Operator Dashboard](docs/operator-dashboard.md) — Phase 4B application boundary, operator workflows, delivery semantics, simulation cases, UI tests, and Phase 4C boundary.
-- [Real-World Integration Architecture](docs/real-world-integration-architecture.md) — Phase 4C adapter contracts, normalization, ACK correlation, idempotency, restart/replay, credentials, privacy, and security.
-- [Controlled Local Transport](docs/controlled-local-transport.md) — Phase 4D durable outbox/evidence, local adapter, Ed25519 identity, replay protection, and runtime ingestion authority.
-- [Authenticated Provider Sandbox](docs/authenticated-provider-sandbox.md) — Phase 4E loopback boundary, service authentication/authorization, ephemeral secrets, key lifecycle, kill switch, reconciliation, restart, and authority proof.
-- [Production Security & Operational Foundations](docs/production-security-foundations.md) — Phase 4F secret custody, TLS/mTLS identity model, transaction semantics, audit export, admission control, operational controls, configuration integrity, and authority proof.
-- [Staging Infrastructure Threat Model & Adapter Selection](docs/staging-infrastructure-architecture.md) — Phase 4G threat model, adapter ADRs, capabilities, configuration, recovery, failover, checkpoint, and authority proof.
-- [Hackathon alignment](docs/hackathon-alignment.md) — evidence for autonomous, adaptive, AI-native, domain-aware, safe operation and Codex's role.
-
-## Roadmap
-
-- **Phase 0 — Architecture:** align the six design documents and repository contract.
-- **Phase 1 — Domain Engine:** implement testable states, network graph, policy engine, routing decisions, verification, and Scenario Engine.
-- **Phase 2 — Autonomous StarryRuntime:** implement the bounded event-driven runtime, autonomous adaptation, idempotency, and deterministic replay.
-- **Phase 3 — Communication Intelligence:** add semantic mission understanding, incident interpretation, operator explanations, recommendations, and constrained LLM integration.
-- **Phase 4 — Integration & Operator Interface:** connect a production API boundary, human-in-the-loop operator surface, persistent runtime history, observability, and real transport adapters without changing deterministic authority.
-- **Phase 5 — Visual System:** add restrained motion, particles, lighting, transitions, and typography refinement with adaptive quality.
-- **Phase 6 — Mobile Field Interface:** implement the four essential Field Link actions and weak-network feedback.
-- **Phase 7 — Hardening:** address performance, accessibility, reduced motion, offline behavior, security, error states, and edge cases.
-
-The next bounded objective after Phase 4G review is **Phase 4H — implement and accept adapters one at a time against isolated disposable local infrastructure, still without production credentials or public deployment**. Live telecom production integration, billing, CMS, carrier infrastructure, real satellite or LoRa field use, drone control, production credentials, public ingress, a vector database, and unconstrained agent frameworks remain deferred.
+This repository does not currently contain an authorized software license; no license grant is implied.

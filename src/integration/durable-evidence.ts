@@ -3,13 +3,13 @@ import {
   existsSync,
   mkdirSync,
   openSync,
-  readFileSync,
   renameSync,
   unlinkSync,
   writeFileSync,
 } from "node:fs";
 import { dirname } from "node:path";
 import { z } from "zod";
+import { PERSISTENCE_MAX_RECORDS, readBoundedUtf8FileSync } from "../foundations/bounded-json-file.js";
 import type { TransportEvidenceRepository } from "./contracts.js";
 import {
   transportEvidenceSchema,
@@ -28,7 +28,7 @@ const durableEvidenceRecordSchema = z
 const durableEvidenceDocumentSchema = z
   .object({
     schemaVersion: z.literal("4D.1"),
-    records: z.array(durableEvidenceRecordSchema),
+    records: z.array(durableEvidenceRecordSchema).max(PERSISTENCE_MAX_RECORDS),
   })
   .strict()
   .superRefine((document, context) => {
@@ -83,7 +83,7 @@ export class FileDurableTransportEvidenceRepository implements TransportEvidence
       return durableEvidenceDocumentSchema.parse({ schemaVersion: "4D.1", records: [] });
     }
     try {
-      return durableEvidenceDocumentSchema.parse(JSON.parse(readFileSync(this.filePath, "utf8")));
+      return durableEvidenceDocumentSchema.parse(JSON.parse(readBoundedUtf8FileSync(this.filePath)));
     } catch {
       throw failure("PERSISTED_EVIDENCE_SCHEMA_INVALID");
     }

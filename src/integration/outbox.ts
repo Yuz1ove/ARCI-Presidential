@@ -3,13 +3,13 @@ import {
   existsSync,
   mkdirSync,
   openSync,
-  readFileSync,
   renameSync,
   unlinkSync,
   writeFileSync,
 } from "node:fs";
 import { dirname } from "node:path";
 import { z } from "zod";
+import { PERSISTENCE_MAX_RECORDS, readBoundedUtf8FileSync } from "../foundations/bounded-json-file.js";
 import { domainIdSchema } from "../domain/ids.js";
 import {
   outboundTransmissionRequestSchema,
@@ -77,7 +77,7 @@ export const durableOutboxRecordSchema = z
 const outboxDocumentSchema = z
   .object({
     schemaVersion: z.literal("4D.1"),
-    records: z.array(durableOutboxRecordSchema),
+    records: z.array(durableOutboxRecordSchema).max(PERSISTENCE_MAX_RECORDS),
   })
   .strict();
 
@@ -107,7 +107,7 @@ export class FileDurableOutbox {
   private readDocument() {
     if (!existsSync(this.filePath)) return outboxDocumentSchema.parse({ schemaVersion: "4D.1", records: [] });
     try {
-      return outboxDocumentSchema.parse(JSON.parse(readFileSync(this.filePath, "utf8")));
+      return outboxDocumentSchema.parse(JSON.parse(readBoundedUtf8FileSync(this.filePath)));
     } catch {
       throw new DurableOutboxError("OUTBOX_MALFORMED");
     }
