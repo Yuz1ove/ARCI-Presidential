@@ -16,6 +16,7 @@
     "production-foundations:scenarios": "tsx src/cli/production-foundations.ts",
     "postgres:acceptance": "vitest run tests/infrastructure/postgres tests/infrastructure/postgres-authority-architecture.test.ts tests/infrastructure/persistence-file-bounds.test.ts",
     "postgres:acceptance:repeat": "vitest run tests/infrastructure/postgres/repeat.test.ts",
+    "presidential:benchmark": "tsx src/cli/presidential-benchmark.ts",
     "staging-infrastructure:scenarios": "tsx src/cli/staging-infrastructure.ts",
     "audit:verify": "tsx src/cli/audit-verify.ts",
     "lint": "eslint .",

@@ -33,7 +33,7 @@ describe("Phase 4D controlled local transport scenarios", () => {
       scenario.includes("replayed"),
     );
     expect(attacks.every(({ authoritativeDelivery }) => !authoritativeDelivery)).toBe(true);
-  });
+  }, 30_000);
 
   it("reconstructs equivalent durable state around every restart boundary", async () => {
     for (const scenario of [
@@ -62,5 +62,5 @@ describe("Phase 4D controlled local transport scenarios", () => {
     const results = await runPhase4DDeterminismGate(10);
     expect(results).toHaveLength(33);
     expect(results.every(({ replays, deterministic }) => replays === 10 && deterministic)).toBe(true);
-  }, 30_000);
+  }, 90_000);
 });

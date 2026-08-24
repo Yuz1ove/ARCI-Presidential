@@ -18,7 +18,19 @@ Emergency communication systems must continue making safe, explainable decisions
 - Production-security contracts for secret custody, service identity, audit integrity, admission control, configuration, and administration.
 - A real, disposable PostgreSQL 18.4 transactional adapter with serializable CAS, idempotency, ambiguous-commit handling, durable reconciliation, restart testing, and least-privilege roles.
 
-Implemented capabilities are exercised locally and in simulation. ARCI has no production deployment, live carrier integration, real satellite or LoRa field validation, public ingress, production credentials, or compliance certification.
+Implemented capabilities are exercised locally and in simulation. The static competition frontend can be hosted for judging, but ARCI has no operational backend deployment, live carrier integration, real satellite or LoRa field validation, public control-plane ingress, production credentials, or compliance certification.
+
+## Presidential Competition Hardening V1
+
+The competition surface extends the existing cinematic without replacing its visual source of truth or scroll timeline. After the opening, it exposes an evidence-linked pipeline from public context through the disaster digital twin, hard constraints, adaptive scoring, simulated execution, ACK verification, re-planning, metrics, and audit records.
+
+- `LIVE`, `REPLAY`, and `SIMULATION` are distinct. LIVE currently fetches only the verified MOI village population publication; it fails closed to fixed replay records if the response is unavailable, invalid, inconsistent, or stale. CWA and TDX remain credential-blocked.
+- MOI, NCC, and MOA records are public structural context. Incident rainfall, outages, route state, message outcomes, and all communication links are explicitly simulated.
+- The deterministic engine uses ten inspectable weights and hard-rejects infeasible candidates before ranking. No LLM owns routing or delivery authority.
+- Three fixed scenarios cover primary outage, simultaneous rural demands with store-and-forward, and a secondary selected-link failure followed by re-planning.
+- `npm run presidential:benchmark` executes 100 evaluations. Outcome metrics are simulated; wall-clock decision latency is measured on the executing device.
+
+See [Presidential architecture](docs/presidential-architecture.md), [decision engine](docs/decision-engine.md), [data sources](docs/data-sources.md), [benchmark](docs/benchmark.md), [data governance](docs/data-governance.md), and [competition demo](docs/competition-demo.md).
 
 ## Architecture
 
@@ -68,6 +80,7 @@ src/
 ├── provider/        authenticated provider sandbox boundary
 ├── foundations/     audit, identity, admission, configuration, transactions
 ├── infrastructure/  adapter contracts and PostgreSQL implementation
+├── presidential/    competition data, digital twin, deterministic engine, benchmark, and UI
 ├── simulation/      deterministic scenario fixtures
 └── cli/             reproducible scenario and audit entry points
 tests/               unit, architecture, security, scenario, and acceptance tests
@@ -81,15 +94,26 @@ Requirements: Node.js 20 or newer and npm. The PostgreSQL acceptance suite uses 
 ```bash
 npm ci
 npm run scenario -- compare
+npm run presidential:benchmark
 npm run runtime -- determinism
 npm test
 ```
 
 Run the dashboard locally with `npm run dashboard`. It is a tested project surface, not evidence of a deployed service.
 
+## Production Deployment
+
+The existing Vercel project deploys only the static Vite web layer (`vercel.json`: `npm ci` → `npm run build` → `dist/dashboard`). From an authenticated checkout already linked through `.vercel/project.json`:
+
+```bash
+npx vercel deploy --prod
+```
+
+Do not create a second Vercel project. The deterministic replay and simulation paths need no environment variables. CWA and TDX credentials are intentionally not used by the browser build; a future credentialed adapter must run behind a server-side boundary. The PostgreSQL, provider sandbox, control plane, and other stateful repository components are not deployed to Vercel.
+
 ## Configuration
 
-The default repository workflows need no secrets. Local `.env` files are ignored, and no production connection string is required or supported by the Phase 4H acceptance harness. Infrastructure contracts accept closed, typed configuration; the PostgreSQL adapter is restricted to `CONTRACT_ONLY` activation.
+The default repository workflows and deterministic competition demo need no secrets. Local `.env` files are ignored, and no production connection string is required or supported by the Phase 4H acceptance harness. Infrastructure contracts accept closed, typed configuration; the PostgreSQL adapter is restricted to `CONTRACT_ONLY` activation. `.env.example` lists optional server-side CWA and TDX variable names only; browser code does not read or expose them.
 
 Do not commit credentials, connection strings, tokens, private keys, local database clusters, logs, coverage, or build output. A future host application must inject secret references through its own server-side boundary and keep raw credentials outside client-visible state and durable evidence.
 
@@ -135,8 +159,10 @@ See [Project status](docs/PROJECT-STATUS.md) for the current functional and exte
 - PostgreSQL evidence is local disposable acceptance, not managed production validation.
 - Backup/restore, replication, failover, TLS/mTLS, workload identity, credential rotation, capacity, and long-duration load are not yet proven.
 - Transport and provider integrations are loopback or simulated; there is no live telecom, satellite, LoRa, drone, or public network integration.
+- Official population, base-station-count, and crop records provide structural context only; they do not prove incident exposure, live coverage, crop loss, or field outcomes.
+- The Vite/Vercel competition surface is a static client. LIVE mode is limited to a public MOI request and cannot securely hold CWA/TDX credentials; those adapters require a future server-side boundary.
 - The language-model boundary is constrained and optional; deterministic policy remains authoritative.
-- The included dashboard is a project/test surface, not a finished domain-specific frontend product.
+- The opening and competition lab are a polished demonstration surface, not a field-deployed emergency operations product.
 - No external deployment, users, partnerships, certifications, or field trials are claimed.
 
 ## Application Layer Strategy

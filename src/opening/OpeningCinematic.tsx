@@ -1,4 +1,5 @@
 import { useRef, type CSSProperties, type ReactElement } from "react";
+import { PresidentialLab } from "../presidential/PresidentialLab.js";
 import { TacticalEditorial } from "./TacticalEditorial.js";
 import { useScrollProgress } from "./useScrollProgress.js";
 
@@ -50,9 +51,9 @@ function rainStreaks(count: number, depth: RainDepth): readonly RainStreak[] {
 }
 
 const RAIN_STREAKS: Readonly<Record<RainDepth, readonly RainStreak[]>> = {
-  distant: rainStreaks(64, "distant"),
-  midground: rainStreaks(42, "midground"),
-  foreground: rainStreaks(12, "foreground"),
+  distant: rainStreaks(32, "distant"),
+  midground: rainStreaks(20, "midground"),
+  foreground: rainStreaks(8, "foreground"),
 };
 
 const BRAND_PARTICLES = Array.from({ length: 14 }, (_, index) => ({
@@ -185,9 +186,8 @@ function DesktopSlopeDegradation(): ReactElement {
         height="892"
         preserveAspectRatio="xMidYMid slice"
         mask="url(#landslide-path-desktop)"
-        filter="url(#eroded-source-desktop)"
       />
-      <path className="debris-mist" filter="url(#slope-mist-desktop)" d="M835 524c57-30 135-25 173 10 21 19 17 42-5 57-49 34-143 25-184-15-18-18-10-36 16-52Z" />
+      <path className="debris-mist" d="M835 524c57-30 135-25 173 10 21 19 17 42-5 57-49 34-143 25-184-15-18-18-10-36 16-52Z" />
 
       <g className="tower-failure tower-failure--desktop" data-tower-layer="svg-damage-overlay">
         <image
@@ -306,9 +306,8 @@ function MobileSlopeDegradation(): ReactElement {
         height="1844"
         preserveAspectRatio="xMidYMid slice"
         mask="url(#landslide-path-mobile)"
-        filter="url(#eroded-source-mobile)"
       />
-      <path className="debris-mist" filter="url(#slope-mist-mobile)" d="M456 1177c51-27 119-22 154 11 19 17 15 39-5 53-44 30-126 22-162-14-16-16-9-32 13-50Z" />
+      <path className="debris-mist" d="M456 1177c51-27 119-22 154 11 19 17 15 39-5 53-44 30-126 22-162-14-16-16-9-32 13-50Z" />
 
       <g className="tower-failure tower-failure--mobile" data-tower-layer="svg-damage-overlay">
         <image
@@ -509,6 +508,7 @@ export function OpeningCinematic(): ReactElement {
           </div>
         </div>
       </section>
+      <PresidentialLab />
     </main>
   );
 }

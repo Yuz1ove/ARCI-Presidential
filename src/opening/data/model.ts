@@ -50,17 +50,22 @@ export interface TargetScore {
   readonly id: string;
   readonly label: string;
   readonly values: readonly number[];
+  readonly contributions: readonly number[];
+  readonly accumulator: readonly number[];
   readonly score: number;
   readonly provenance: "DERIVED";
 }
 
 export interface RouteCandidate {
   readonly id: string;
+  readonly label: string;
   readonly reachability: number;
   readonly stability: number;
   readonly risk: number;
-  readonly latency: number;
+  readonly latencyPenalty: number;
+  readonly latencyMs: number;
   readonly successRate: number;
+  readonly utility: number;
   readonly decision: "CANDIDATE" | "LOCKED";
 }
 

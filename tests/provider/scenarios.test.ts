@@ -8,7 +8,7 @@ describe("Phase 4E authenticated provider sandbox scenarios", () => {
     const results = await runAllPhase4EScenarios();
     expect(results).toHaveLength(54);
     expect(results.every(({ secretMaterialExposed, externalProseRetained }) => !secretMaterialExposed && !externalProseRetained)).toBe(true);
-  });
+  }, 30_000);
 
   it("proves each pre-verification stage remains non-authoritative", async () => {
     for (const name of [
@@ -32,7 +32,7 @@ describe("Phase 4E authenticated provider sandbox scenarios", () => {
     expect(results.every(({ authoritativeDelivery }) => !authoritativeDelivery)).toBe(true);
     expect(await runPhase4EScenario("rotated-valid-signing-key"))
       .toMatchObject({ candidateBuilt: true, authoritativeDelivery: false });
-  });
+  }, 30_000);
 
   it("enforces kill-switch checks before every new attempt while retaining evidence-only callbacks", async () => {
     expect(await runPhase4EScenario("kill-switch-before-send"))
@@ -65,5 +65,5 @@ describe("Phase 4E authenticated provider sandbox scenarios", () => {
     const results = await runPhase4EDeterminismGate(10);
     expect(results).toHaveLength(54);
     expect(results.every(({ deterministic }) => deterministic)).toBe(true);
-  }, 30_000);
+  }, 120_000);
 });

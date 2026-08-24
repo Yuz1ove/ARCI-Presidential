@@ -5,7 +5,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
-    ignores: ["dist/**", "coverage/**", "node_modules/**"],
+    ignores: ["dist/**", ".vercel/**", "coverage/**", "node_modules/**"],
   },
   {
     files: ["**/*.{ts,tsx}"],

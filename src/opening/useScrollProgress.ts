@@ -2,7 +2,8 @@ import { useEffect, type RefObject } from "react";
 import { activeScene, brandRevealAt, clamp01, narrativeAt, stateAt, tacticalAt } from "./timeline.js";
 
 function setNumberProperty(track: HTMLElement, property: string, value: number): void {
-  track.style.setProperty(property, value.toFixed(4));
+  const nextValue = value.toFixed(4);
+  if (track.style.getPropertyValue(property) !== nextValue) track.style.setProperty(property, nextValue);
 }
 
 function renderProgress(track: HTMLElement, progress: number): void {
@@ -50,14 +51,20 @@ function renderProgress(track: HTMLElement, progress: number): void {
   setNumberProperty(track, "--brand-hold", tactical.brandHold);
   setNumberProperty(track, "--brand-dock", tactical.brandDock);
   setNumberProperty(track, "--scan-grid", tactical.scanGrid);
+  setNumberProperty(track, "--outage", tactical.outage);
+  setNumberProperty(track, "--outage-pulse", tactical.outagePulse);
   setNumberProperty(track, "--sensing", tactical.sensing);
+  setNumberProperty(track, "--sensing-capture", tactical.sensingCapture);
   setNumberProperty(track, "--sensing-compact", tactical.sensingCompact);
   setNumberProperty(track, "--inventory", tactical.inventory);
+  setNumberProperty(track, "--inventory-parse", tactical.inventoryParse);
   setNumberProperty(track, "--inventory-compact", tactical.inventoryCompact);
   setNumberProperty(track, "--weighting", tactical.weighting);
+  setNumberProperty(track, "--weighting-calibrate", tactical.weightingCalibrate);
   setNumberProperty(track, "--weights-align", tactical.weightsAlign);
   setNumberProperty(track, "--computation", tactical.computation);
   setNumberProperty(track, "--computation-rows", tactical.computationRows);
+  setNumberProperty(track, "--computation-complete", tactical.computationComplete);
   setNumberProperty(track, "--decision-select", tactical.decisionSelect);
   setNumberProperty(track, "--routing", tactical.routing);
   setNumberProperty(track, "--terrain-build", tactical.terrainBuild);

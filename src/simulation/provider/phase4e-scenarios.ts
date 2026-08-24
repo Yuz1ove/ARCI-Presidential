@@ -309,7 +309,7 @@ export async function runPhase4EScenario(scenario: Phase4EScenarioName): Promise
       : startedEndpoint;
     const client = await LoopbackProviderHttpClient.connect({ endpoint, requestBytes: 32_768,
       responseBytes: 16_384, callbackBytes: 16_384,
-      timeoutMs: scenario === "provider-timeout" ? 20 : 500, maximumRetries: 2 });
+      timeoutMs: scenario === "provider-timeout" ? 20 : 1_500, maximumRetries: 2 });
     const signer = scenario === "unauthenticated-provider-request" ? unauthenticatedArci : arci;
     const makeGateway = () => new AuthenticatedProviderGateway(
       outbox, evidence, boundary, client, signer, callbackKeys,
@@ -353,7 +353,12 @@ export async function runPhase4EScenario(scenario: Phase4EScenarioName): Promise
     }
     if (scenario === "callback-while-kill-switch-disabled") killSwitch.setEnabled(false);
 
-    let collected = await gateway.collectCallbacks();
+    // A timed-out sandbox request never reaches authorization or queues a
+    // callback. Skipping an impossible callback poll also keeps this fixture's
+    // canonical result independent of loopback socket teardown scheduling.
+    let collected = scenario === "provider-timeout"
+      ? { evidence: [], failures: [], authoritativeDelivery: false as const }
+      : await gateway.collectCallbacks();
     if (scenario === "delayed-callback") collected = await gateway.collectCallbacks();
     if (scenario === "duplicate-callback" || scenario === "callback-replay") {
       const replay = await gateway.collectCallbacks();

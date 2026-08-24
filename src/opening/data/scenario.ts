@@ -41,23 +41,54 @@ export function normalizeWeights(factors: readonly WeightFactor[]): readonly Act
 export const ACTIVE_WEIGHTS = normalizeWeights(WEIGHT_FACTORS);
 
 const TARGET_INPUTS = [
-  { id: "TARGET_A", label: "甲聚落", values: [0.9, 0.615, 0.81, 0.67, 0.4] },
-  { id: "TARGET_B", label: "乙聚落", values: [0.74, 0.82, 0.7, 0.61, 0.65] },
+  { id: "TARGET_A", label: "山腰通訊中繼部署", values: [0.9, 0.615, 0.81, 0.67, 0.4] },
+  { id: "TARGET_B", label: "聚落物資優先調度", values: [0.74, 0.82, 0.7, 0.61, 0.65] },
 ] as const;
 
-export function weightedScore(values: readonly number[], weights: readonly ActiveWeight[]): number {
+export function scoreTrace(values: readonly number[], weights: readonly ActiveWeight[]): {
+  readonly contributions: readonly number[];
+  readonly accumulator: readonly number[];
+  readonly score: number;
+} {
   if (values.length !== weights.length) throw new Error("Target values and weights must have identical dimensions");
-  return values.reduce((sum, value, index) => sum + value * weights[index]!.active, 0);
+  const contributions = values.map((value, index) => value * weights[index]!.active);
+  const accumulator = contributions.reduce<number[]>((steps, contribution) => {
+    steps.push((steps.at(-1) ?? 0) + contribution);
+    return steps;
+  }, []);
+  return { contributions, accumulator, score: accumulator.at(-1) ?? 0 };
 }
 
-export const TARGET_SCORES: readonly TargetScore[] = TARGET_INPUTS.map((target) => ({
-  ...target,
-  score: weightedScore(target.values, ACTIVE_WEIGHTS),
-  provenance: "DERIVED" as const,
-}));
+export function weightedScore(values: readonly number[], weights: readonly ActiveWeight[]): number {
+  return scoreTrace(values, weights).score;
+}
 
-export const ROUTES: readonly RouteCandidate[] = [
-  { id: "ROUTE_A", reachability: 0.72, stability: 0.84, risk: 0.62, latency: 0.58, successRate: 0.68, decision: "CANDIDATE" },
-  { id: "ROUTE_B", reachability: 0.86, stability: 0.79, risk: 0.31, latency: 0.75, successRate: 0.84, decision: "LOCKED" },
-  { id: "ROUTE_C", reachability: 0.64, stability: 0.91, risk: 0.44, latency: 0.46, successRate: 0.7, decision: "CANDIDATE" },
+export const TARGET_SCORES: readonly TargetScore[] = TARGET_INPUTS.map((target) => {
+  const trace = scoreTrace(target.values, ACTIVE_WEIGHTS);
+  return { ...target, ...trace, provenance: "DERIVED" as const };
+});
+
+const ROUTE_INPUTS = [
+  { id: "ROUTE_A", label: "山腰中繼路徑", reachability: 0.72, stability: 0.84, risk: 0.62, latencyPenalty: 0.58, latencyMs: 92, successRate: 0.68 },
+  { id: "ROUTE_B", label: "稜線替代路徑", reachability: 0.86, stability: 0.79, risk: 0.31, latencyPenalty: 0.25, latencyMs: 68, successRate: 0.84 },
+  { id: "ROUTE_C", label: "既有道路節點", reachability: 0.64, stability: 0.91, risk: 0.44, latencyPenalty: 0.46, latencyMs: 118, successRate: 0.7 },
 ] as const;
+
+export function routeUtility(route: Pick<RouteCandidate, "reachability" | "stability" | "risk" | "latencyPenalty" | "successRate">): number {
+  return (
+    0.28 * route.reachability
+    + 0.27 * route.stability
+    + 0.2 * (1 - route.risk)
+    + 0.15 * (1 - route.latencyPenalty)
+    + 0.1 * route.successRate
+  );
+}
+
+const ROUTE_UTILITIES = ROUTE_INPUTS.map(routeUtility);
+const LOCKED_ROUTE_INDEX = ROUTE_UTILITIES.indexOf(Math.max(...ROUTE_UTILITIES));
+
+export const ROUTES: readonly RouteCandidate[] = ROUTE_INPUTS.map((route, index) => ({
+  ...route,
+  utility: ROUTE_UTILITIES[index]!,
+  decision: index === LOCKED_ROUTE_INDEX ? "LOCKED" as const : "CANDIDATE" as const,
+}));

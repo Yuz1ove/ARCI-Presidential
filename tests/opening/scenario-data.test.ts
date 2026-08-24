@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ADAPTER_CONTRACTS, validateAdapterRegistry } from "../../src/opening/data/adapters.js";
 import { CANDIDATE_SCENARIOS } from "../../src/opening/data/candidates.js";
-import { ACTIVE_WEIGHTS, ROUTES, SCENARIO_META, SENSING_SIGNALS, TARGET_SCORES, WEIGHT_FACTORS, normalizeWeights, weightedScore } from "../../src/opening/data/scenario.js";
+import { ACTIVE_WEIGHTS, ROUTES, SCENARIO_META, SENSING_SIGNALS, TARGET_SCORES, WEIGHT_FACTORS, normalizeWeights, routeUtility, scoreTrace, weightedScore } from "../../src/opening/data/scenario.js";
 import { OFFICIAL_SOURCES } from "../../src/opening/data/sources.js";
 
 describe("ARCI Real-Data Scenario Dataset v1", () => {
@@ -18,12 +18,21 @@ describe("ARCI Real-Data Scenario Dataset v1", () => {
     expect(weightedScore(TARGET_SCORES[0]!.values, ACTIVE_WEIGHTS)).toBeCloseTo(0.737, 3);
     expect(weightedScore(TARGET_SCORES[1]!.values, ACTIVE_WEIGHTS)).toBeCloseTo(0.722, 3);
     expect(TARGET_SCORES[0]!.score).toBeGreaterThan(TARGET_SCORES[1]!.score);
+    for (const target of TARGET_SCORES) {
+      const trace = scoreTrace(target.values, ACTIVE_WEIGHTS);
+      expect(trace.contributions).toEqual(target.contributions);
+      expect(trace.accumulator).toEqual(target.accumulator);
+      expect(target.contributions.reduce((sum, value) => sum + value, 0)).toBeCloseTo(target.score, 12);
+      expect(target.accumulator.at(-1)).toBeCloseTo(target.score, 12);
+    }
   });
 
   it("locks one route while retaining three traceable candidates", () => {
     expect(ROUTES).toHaveLength(3);
     expect(ROUTES.filter((route) => route.decision === "LOCKED")).toHaveLength(1);
     expect(ROUTES.find((route) => route.decision === "LOCKED")?.id).toBe("ROUTE_B");
+    expect(ROUTES.every((route) => routeUtility(route) === route.utility)).toBe(true);
+    expect(ROUTES.find((route) => route.decision === "LOCKED")?.utility).toBe(Math.max(...ROUTES.map((route) => route.utility)));
   });
 
   it("covers every official source with one honest adapter contract", () => {
