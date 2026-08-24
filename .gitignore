@@ -6,6 +6,8 @@ build/
 coverage/
 playwright-report/
 test-results/
+.playwright-cli/
+output/playwright/
 
 # Local runtime state
 /.arci-postgres/
@@ -34,3 +36,4 @@ npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/.vercel/
