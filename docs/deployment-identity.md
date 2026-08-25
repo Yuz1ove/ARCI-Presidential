@@ -4,7 +4,7 @@ This repository has one production deployment identity:
 
 | Repository | Vercel project | Project ID | Production |
 | --- | --- | --- | --- |
-| `Autonomous-Resilient-Communication-Intelligence` | `arci-presidential` | `prj_UIevY4Ux5uwAs4yrSgHDtPfsNiVz` | `https://arci-presidential.vercel.app` |
+| `ARCI-Presidential` | `arci-presidential` | `prj_UIevY4Ux5uwAs4yrSgHDtPfsNiVz` | `https://arci-presidential.vercel.app` |
 
 Do not deploy this repository to either of these separate products:
 
